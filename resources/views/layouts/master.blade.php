@@ -25,7 +25,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </li>
                 </ul>
 
-
                 <!-- Right navbar links -->
                 <ul class="navbar-nav ml-auto">
                     <!-- Notifications Dropdown Menu -->
@@ -83,20 +82,29 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                             <!-- Add icons to the links using the .nav-icon class
                             with font-awesome or any other icon font library -->
-                            <li class="nav-item has-treeview menu-open">
+                            @php
+                                $items = array(
+                                    // text        Link    Icon            Class
+                                    "Dashboard" => ["/", "tachometer-alt", ""],
+                                    "Attendance" => ["/attendance", "clipboard-list", ""],
+                                    "Book Entry" => ["/book-entry", "book", ""],
+                                    "Issued & Return" => ["/issued-return", "paste", ""],
+                                    "Borrowers" => ["/borrowers", "book-reader", ""],
+                                    "User Management" => ["/user-management", "users-cog", ""],
+                                    "Audit Log" => ["/audit-log", "history", ""],
+                                    "Reports" => ["/reports", "file-download", ""],
+                                );
+                            @endphp
 
-                            <li class="nav-item">
-                                <router-link to="/" class="nav-link">
-                                    <i class="nav-icon fas fa-tachometer-alt"></i>
-                                    <p>Dashboard</p>
-                                </router-link>
-                            </li>
-                            <li class="nav-item">
-                                <router-link to="/profile" class="nav-link">
-                                    <i class="nav-icon fas fa-user"></i>
-                                    <p>Profile</p>
-                                </router-link>
-                            </li>
+                            @foreach ($items as $item => [$link, $icon, $class])
+                                <li class="nav-item">
+                                    <router-link to="{{ $link }}" class="nav-link {{ $class }}">
+                                        <i class="nav-icon fas fa-{{ $icon }}"></i>
+                                        <p>{{ $item }}</p>
+                                    </router-link>
+                                </li>
+                            @endforeach
+
                         </ul>
                     </nav>
                     <!-- /.sidebar-menu -->
@@ -106,29 +114,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper">
-                <!-- Content Header (Page header) -->
-                <div class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1 class="m-0 text-dark">Starter Page</h1>
-                    </div><!-- /.col -->
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Starter Page</li>
-                        </ol>
-                    </div><!-- /.col -->
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
-                </div>
-                <!-- /.content-header -->
+                <br>
 
                 <!-- Main content -->
                 <div class="content">
                     <div class="container-fluid">
                         <router-view></router-view>
-                    </div><!-- /.container-fluid -->
+                    </div>
                 </div>
                 <!-- /.content -->
             </div>
