@@ -7,10 +7,16 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
-
 import VueRouter from 'vue-router'
-
 Vue.use(VueRouter)
+
+import VueProgressBar from 'vue-progressbar'
+
+Vue.use(VueProgressBar, {
+  color: 'rgb(143, 255, 199)',
+  failedColor: 'red',
+  height: '2px'
+})
 
 const routes = [
     { path: '/', name: "Dashboard", component: require('./components/pages/Dashboard.vue').default },
@@ -27,7 +33,6 @@ const routes = [
 const router = new VueRouter({
     mode: 'history',
     routes // short for `routes: routes`
-
   })
 
 /**
@@ -40,8 +45,6 @@ const router = new VueRouter({
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-// Vue.component('example-component', require('./components/pages/ExampleComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
