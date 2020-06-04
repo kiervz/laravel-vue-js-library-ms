@@ -29,7 +29,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-
+                                <tr v-for="book in books" v-bind:key="book.id">
+                                    <td>{{ book.call_number }}</td>
+                                    <td>{{ book.isbn }}</td>
+                                    <td>{{ book.title }}</td>
+                                    <td>{{ book.author }}</td>
+                                    <td>{{ book.publisher }}</td>
+                                    <td>{{ book.category_id }}</td>
+                                    <td>{{ book.date_published }}</td>
+                                    <td>
+                                        <i class="fas fa-trash" @click="onDelete(book.id)"></i>
+                                        <i class="fas fa-edit" @click="editBook(book.id)"></i>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -219,17 +231,12 @@
         methods: {
             // fetching data
             async loadBooks() {
-                this.$Progress.start();
                 await axios.get('api/book')
-                    .then(({ data }) => {
-                        this.books = data.data.books;
-                        this.book_categories = data.data.book_categories;
-                        this.$Progress.finish();
-                    })
-                    .catch(error => {
-                        this.$Progress.fail();
-                        this.errors = error.response.data.errors;
-                    });
+                        .then(({ data }) => {
+                            this.books = data.data.book;
+                            this.book_categories = data.data.book_categories;
+                        })
+                        .catch(err => console.log("Error :", err));
             },
             openModal() {
                 this.editMode = false;
@@ -238,13 +245,13 @@
             async saveData() {
                 this.$Progress.start();
                 await axios.post('api/book', this.bookData)
-                    .then(({data}) => {
+                    .then(({ data }) => {
                         this.$Progress.finish();
                         $('#add_book').modal('hide');
                     })
-                    .catch(error => {
+                    .catch(err => {
                         this.$Progress.fail();
-                        this.errors = error.response.data.errors;
+                        this.errors = err.response.data.errors;
                     })
             }
         }

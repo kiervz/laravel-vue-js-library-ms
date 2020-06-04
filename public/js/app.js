@@ -2132,6 +2132,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "BookEntry",
   data: function data() {
@@ -2225,22 +2237,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this.$Progress.start();
-
-                _context.next = 3;
+                _context.next = 2;
                 return axios.get('api/book').then(function (_ref) {
                   var data = _ref.data;
-                  _this.books = data.data.books;
+                  _this.books = data.data.book;
                   _this.book_categories = data.data.book_categories;
-
-                  _this.$Progress.finish();
-                })["catch"](function (error) {
-                  _this.$Progress.fail();
-
-                  _this.errors = error.response.data.errors;
+                })["catch"](function (err) {
+                  return console.log("Error :", err);
                 });
 
-              case 3:
+              case 2:
               case "end":
                 return _context.stop();
             }
@@ -2269,10 +2275,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this2.$Progress.finish();
 
                   $('#add_book').modal('hide');
-                })["catch"](function (error) {
+                })["catch"](function (err) {
                   _this2.$Progress.fail();
 
-                  _this2.errors = error.response.data.errors;
+                  _this2.errors = err.response.data.errors;
                 });
 
               case 3:
@@ -38893,7 +38899,53 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
-          _vm._m(1),
+          _c("div", { staticClass: "card-body" }, [
+            _c("table", { staticClass: "table table-bordered" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.books, function(book) {
+                  return _c("tr", { key: book.id }, [
+                    _c("td", [_vm._v(_vm._s(book.call_number))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(book.isbn))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(book.title))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(book.author))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(book.publisher))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(book.category_id))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(book.date_published))]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c("i", {
+                        staticClass: "fas fa-trash",
+                        on: {
+                          click: function($event) {
+                            return _vm.onDelete(book.id)
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("i", {
+                        staticClass: "fas fa-edit",
+                        on: {
+                          click: function($event) {
+                            return _vm.editBook(book.id)
+                          }
+                        }
+                      })
+                    ])
+                  ])
+                }),
+                0
+              )
+            ])
+          ]),
           _vm._v(" "),
           _vm._m(2)
         ])
@@ -39294,29 +39346,23 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body" }, [
-      _c("table", { staticClass: "table table-bordered" }, [
-        _c("thead", [
-          _c("tr", [
-            _c("th", [_vm._v("Call No.")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("ISBN")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Title")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Author")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Publisher")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Category")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Date Pub.")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Action")])
-          ])
-        ]),
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Call No.")]),
         _vm._v(" "),
-        _c("tbody")
+        _c("th", [_vm._v("ISBN")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Title")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Author")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Publisher")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Category")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Date Pub.")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Action")])
       ])
     ])
   },
