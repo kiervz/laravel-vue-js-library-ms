@@ -1,11 +1,11 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-baseline">
-                            <div class="d-flex align-items-center pb-2">
+                            <div class="d-flex align-items-center">
                                 <h3 class="card-title">Books</h3>
                             </div>
                             <button class="btn btn-sm btn-primary show-book-modal" @click="openModal" data-title="ADD">
@@ -38,8 +38,9 @@
                                     <td>{{ book.category_id }}</td>
                                     <td>{{ book.date_published }}</td>
                                     <td>
-                                        <i class="fas fa-trash" @click="onDelete(book.id)"></i>
                                         <i class="fas fa-edit" @click="editBook(book.id)"></i>
+                                        |
+                                        <i class="fas fa-trash" @click="onDelete(book.id)"></i>
                                     </td>
                                 </tr>
                             </tbody>
@@ -247,11 +248,36 @@
                 await axios.post('api/book', this.bookData)
                     .then(({ data }) => {
                         this.$Progress.finish();
+                        this.bookData = {};
+                        this.loadBooks();
                         $('#add_book').modal('hide');
                     })
                     .catch(err => {
                         this.$Progress.fail();
                         this.errors = err.response.data.errors;
+                    })
+            },
+            onDelete(id) {
+                Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.value) {
+                            axios.delete('api/book/' + id)
+                                .then(({ data }) => {
+                                    Swal.fire('Deleted!', data.message, data.status);
+                                    this.loadBooks();
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                    Swal.fire('Failed!', 'There was something wrong.', 'warning');
+                                });
+                        }
                     })
             }
         }

@@ -18,6 +18,10 @@ Vue.use(VueProgressBar, {
   height: '2px'
 })
 
+// ES6 Modules or TypeScript
+import Swal from 'sweetalert2'
+window.Swal = Swal;
+
 const routes = [
     { path: '/', name: "Dashboard", component: require('./components/pages/Dashboard.vue').default },
     { path: '/attendance', name: "Attendance", component: require('./components/pages/Attendance.vue').default },
