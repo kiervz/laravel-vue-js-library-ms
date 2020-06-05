@@ -10,6 +10,14 @@ window.Vue = require('vue');
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
+
+import Vue from 'vue'
+import { Form, HasError, AlertError } from 'vform'
+window.Form = Form;
+
+Vue.component(HasError.name, HasError)
+Vue.component(AlertError.name, AlertError)
+
 import VueProgressBar from 'vue-progressbar'
 
 Vue.use(VueProgressBar, {

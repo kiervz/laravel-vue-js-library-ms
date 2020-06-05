@@ -38,6 +38,20 @@ class BookController extends Controller
 
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'isbn' => 'required|numeric|min:30|unique:books',
+            'call_number' => 'required|numeric|min:30',
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:150',
+            'publisher' => 'required|string|max:150',
+            'description' => 'required|string|max:255',
+            'category_id' => 'required|integer',
+            'date_published' => 'required',
+            'series' => 'required|string|max:15',
+            'price' => 'required|numeric',
+            'total_copies' => 'required|numeric'
+        ]);
+
         $status = "error";
         $message = "Book failed to create.";
         $code = Response::HTTP_CONFLICT;
@@ -69,15 +83,37 @@ class BookController extends Controller
 
     }
 
-    public function update(Request $request, Book $book)
+    public function update(Request $request, $id)
     {
+        $book = Book::findOrFail($id);
 
+        $this->validate($request, [
+            'call_number' => 'required|numeric|min:30',
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:150',
+            'publisher' => 'required|string|max:150',
+            'description' => 'required|string|max:255',
+            'category_id' => 'required|integer',
+            'date_published' => 'required',
+            'series' => 'required|string|max:15',
+            'price' => 'required|numeric',
+            'total_copies' => 'required|numeric',
+            'isbn' => 'required|numeric|min:30|unique:books,isbn,' .$book->id,
+        ]);
+
+        $book->update($request->all());
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Book successfully updated!',
+            'data' => $book
+        ], Response::HTTP_OK);
     }
 
     public function destroy($id)
     {
         $book = Book::findOrFail($id);
-        // $book->delete();
+        $book->delete();
 
         return response()->json([
             'status' => 'success',

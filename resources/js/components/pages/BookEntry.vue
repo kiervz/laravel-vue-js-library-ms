@@ -8,7 +8,7 @@
                             <div class="d-flex align-items-center">
                                 <h3 class="card-title">Books</h3>
                             </div>
-                            <button class="btn btn-sm btn-primary show-book-modal" @click="openModal" data-title="ADD">
+                            <button class="btn btn-sm btn-primary show-book-modal" @click="addModal" data-title="ADD">
                                 Book Register <i class="fas fa-plus"></i>
                             </button>
                         </div>
@@ -18,6 +18,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
+                                    <th>ID</th>
                                     <th>Call No.</th>
                                     <th>ISBN</th>
                                     <th>Title</th>
@@ -30,6 +31,7 @@
                             </thead>
                             <tbody>
                                 <tr v-for="book in books" v-bind:key="book.id">
+                                    <td>{{ book.id }}</td>
                                     <td>{{ book.call_number }}</td>
                                     <td>{{ book.isbn }}</td>
                                     <td>{{ book.title }}</td>
@@ -38,9 +40,9 @@
                                     <td>{{ book.category_id }}</td>
                                     <td>{{ book.date_published }}</td>
                                     <td>
-                                        <i class="fas fa-edit" @click="editBook(book.id)"></i>
+                                        <i class="fas fa-edit" @click="editModal(book)"></i>
                                         |
-                                        <i class="fas fa-trash" @click="onDelete(book.id)"></i>
+                                        <i class="fas fa-trash" @click="deleteBook(book.id)"></i>
                                     </td>
                                 </tr>
                             </tbody>
@@ -59,72 +61,83 @@
         <div class="modal fade" id="add_book" role="dialog">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <!-- Modal Header -->
-                    <div class="modal-header bg-dark text-white">
-                        <h5 class="modal-title">Register Book</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span class="text-white" aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+                    <form @submit.prevent="editMode ? updateBook() : addBook()">
+                        <!-- Modal Header -->
+                        <div class="modal-header bg-dark text-white">
+                            <h5 v-show="!editMode" class="modal-title">Register Book</h5>
+                            <h5 v-show="editMode" class="modal-title">Update Book</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span class="text-white" aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
 
-                    <!-- Modal Content -->
-                    <div class="modal-body text-muted">
-                        <div class="row">
-                            <!-- first row -->
-                            <div class="col-6">
-                                <div v-for="(item, $index) in item_col_1" :key="$index" class="form-group">
-                                    <label :for="item.name">{{ item.label }}</label>
-                                    <input
-                                        :id="item.name"
-                                        :name="item.name"
-                                        :type="item.type"
-                                        :required="item.required"
-                                        v-model="bookData[item.name]"
-                                        class="form-control"
-                                    >
-                                </div>
-                            </div>
-                            <!-- second row -->
-                            <div class="col-6">
-                                <div v-for="(item, $index) in item_col_2" :key="$index" class="form-group">
-                                    <label :for="item.name">{{ item.label }}</label>
-                                    <div v-if="item.type == 'dropdown'">
-                                        <select
-                                            :name="item.name"
-                                            :id="item.name"
-                                            v-model="bookData[item.name]"
-                                            class="form-control"
-                                        >
-                                            <option value="" disabled selected>Select Book Category</option>
-                                            <option
-                                                v-for="item in book_categories"
-                                                v-bind:value="item.id"
-                                                v-bind:key="item.id">
-                                                {{ item.category }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div v-else>
+                        <!-- Modal Content -->
+                        <div class="modal-body text-muted">
+                            <div class="row">
+                                <!-- first row -->
+                                <div class="col-6">
+                                    <div v-for="(item, $index) in item_col_1" :key="$index" class="form-group">
+                                        <label :for="item.name">{{ item.label }}</label>
                                         <input
                                             :id="item.name"
                                             :name="item.name"
-                                            :required="item.required"
                                             :type="item.type"
-                                            v-model="bookData[item.name]"
+                                            v-model="form[item.name]"
                                             class="form-control"
+                                            :class="{ 'is-invalid': form.errors.has(item.name) }"
                                         >
+                                        <has-error :form="form" :field="item.name"></has-error>
+                                    </div>
+                                </div>
+                                <!-- second row -->
+                                <div class="col-6">
+                                    <div v-for="(item, $index) in item_col_2" :key="$index" class="form-group">
+                                        <label :for="item.name">{{ item.label }}</label>
+                                        <div v-if="item.type == 'dropdown'">
+                                            <select
+                                                :name="item.name"
+                                                :id="item.name"
+                                                v-model="form[item.name]"
+                                                class="form-control"
+                                                :class="{ 'is-invalid': form.errors.has(item.name) }"
+                                            >
+                                                <option value="" disabled selected>Select Book Category</option>
+                                                <option
+                                                    v-for="item in book_categories"
+                                                    v-bind:value="item.id"
+                                                    v-bind:key="item.id">
+                                                    {{ item.category }}
+                                                </option>
+                                            </select>
+                                            <has-error :form="form" :field="item.name"></has-error>
+                                        </div>
+                                        <div v-else>
+                                            <input
+                                                :id="item.name"
+                                                :name="item.name"
+                                                :type="item.type"
+                                                v-model="form[item.name]"
+                                                class="form-control"
+                                                :class="{ 'is-invalid': form.errors.has(item.name) }"
+                                            >
+                                            <has-error :form="form" :field="item.name"></has-error>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Modal Footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary p-18" data-dismiss="modal">Cancel</button>
-                        <button @click="saveData" type="button" class="btn btn-secondary p-18"><i class="fas fa-save mr-1"></i>Save</button>
-                        <button type="button" class="btn btn-secondary p-18"><i class="fas fa-pen mr-1"></i>Update</button>
-                    </div>
+                        <!-- Modal Footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary p-18" data-dismiss="modal">Cancel</button>
+                            <button v-show="!editMode" type="submit" class="btn btn-primary">
+                                <i class="fas fa-save mr-1"></i>Save
+                            </button>
+                            <button v-show="editMode" type="submit" class="btn btn-primary">
+                                <i class="fas fa-pen mr-1"></i>Update
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -139,7 +152,9 @@
             return {
                 books: {},
                 book_categories: {},
-                bookData: {
+                // Create a new form instance
+                form: new Form({
+                    id: '',
                     isbn: '',
                     call_number: '',
                     title: '',
@@ -151,7 +166,7 @@
                     series: '',
                     price: '',
                     total_copies: ''
-                },
+                }),
                 item_col_1: [
                     {
                         label: "ISBN",
@@ -222,8 +237,7 @@
                         type: "number"
                     },
                 ],
-                editMode: false,
-                errors: []
+                editMode: true
             }
         },
         created() {
@@ -239,16 +253,17 @@
                         })
                         .catch(err => console.log("Error :", err));
             },
-            openModal() {
+            addModal() {
+                this.form.reset();
+                this.form.clear();
                 this.editMode = false;
                 $('#add_book').modal('show');
             },
-            async saveData() {
+            async addBook() {
                 this.$Progress.start();
-                await axios.post('api/book', this.bookData)
+                await this.form.post('api/book', this.form)
                     .then(({ data }) => {
                         this.$Progress.finish();
-                        this.bookData = {};
                         this.loadBooks();
                         $('#add_book').modal('hide');
                     })
@@ -257,7 +272,41 @@
                         this.errors = err.response.data.errors;
                     })
             },
-            onDelete(id) {
+            editModal(book) {
+                this.form.reset();
+                this.form.clear();
+                this.editMode = true;
+                $('#add_book').modal('show');
+                this.form.fill(book);
+            },
+            updateBook() {
+                Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, update it!'
+                    }).then((result) => {
+                        if (result.value) {
+                            this.$Progress.start();
+                            this.form.put('api/book/' + this.form.id)
+                                .then(({ data }) => {
+                                    this.$Progress.finish();
+                                    this.loadBooks();
+                                    $('#add_book').modal('hide');
+                                })
+                                .catch(err => {
+                                    this.$Progress.fail();
+                                    console.log(err);
+                                    Swal.fire('Failed!', 'There was something wrong.', 'warning');
+                                });
+                        }
+                    })
+
+            },
+            deleteBook(id) {
                 Swal.fire({
                         title: 'Are you sure?',
                         text: "You won't be able to revert this!",
@@ -268,12 +317,15 @@
                         confirmButtonText: 'Yes, delete it!'
                     }).then((result) => {
                         if (result.value) {
+                            this.$Progress.start();
                             axios.delete('api/book/' + id)
                                 .then(({ data }) => {
+                                    this.$Progress.finish();
                                     Swal.fire('Deleted!', data.message, data.status);
                                     this.loadBooks();
                                 })
                                 .catch(err => {
+                                    this.$Progress.fail();
                                     console.log(err);
                                     Swal.fire('Failed!', 'There was something wrong.', 'warning');
                                 });
