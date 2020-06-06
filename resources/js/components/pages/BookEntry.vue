@@ -26,6 +26,7 @@
                                     <th>Publisher</th>
                                     <th>Category</th>
                                     <th>Date Pub.</th>
+                                    <th>Copies</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -39,7 +40,10 @@
                                     <td>{{ book.publisher }}</td>
                                     <td>{{ book.category_id }}</td>
                                     <td>{{ book.date_published }}</td>
+                                    <td>{{ book.total_copies }}</td>
                                     <td>
+                                        <i class="fas fa-plus" @click="updateCopiesModal(book)"></i>
+                                        |
                                         <i class="fas fa-edit" @click="editModal(book)"></i>
                                         |
                                         <i class="fas fa-trash" @click="deleteBook(book.id)"></i>
@@ -57,7 +61,7 @@
                 </div>
             </div>
         </div>
-
+        <!-- Modal for updating book -->
         <div class="modal fade" id="add_book" role="dialog">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -112,15 +116,19 @@
                                             <has-error :form="form" :field="item.name"></has-error>
                                         </div>
                                         <div v-else>
-                                            <input
-                                                :id="item.name"
-                                                :name="item.name"
-                                                :type="item.type"
-                                                v-model="form[item.name]"
-                                                class="form-control"
-                                                :class="{ 'is-invalid': form.errors.has(item.name) }"
-                                            >
-                                            <has-error :form="form" :field="item.name"></has-error>
+                                            <div>
+                                                <!-- When edit modal is active, the copies field will be disabled -->
+                                                <input
+                                                    :disabled="editMode && item.name == 'total_copies'"
+                                                    :id="item.name"
+                                                    :name="item.name"
+                                                    :type="item.type"
+                                                    v-model="form[item.name]"
+                                                    class="form-control"
+                                                    :class="{ 'is-invalid': form.errors.has(item.name) }"
+                                                >
+                                                <has-error :form="form" :field="item.name"></has-error>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -136,6 +144,64 @@
                             <button v-show="editMode" type="submit" class="btn btn-primary">
                                 <i class="fas fa-pen mr-1"></i>Update
                             </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for updating copies of book -->
+        <div class="modal fade" id="update_copies" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <form @submit.prevent="updateBookCopies">
+                        <div class="modal-header bg-dark text-white">
+                            <h5 class="modal-title" id="exampleModalLabel">Acquire New Copies</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span class="text-white" aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card">
+                                <div class="card-header">
+                                    Book Details
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row ml-1">
+                                        <div class="col-md-5">
+                                            <label for="book_title" class="mr-4">Book Title: </label>
+                                        </div>
+                                        <div class="col">
+                                            {{ form.title }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group row ml-1">
+                                        <div class="col-md-5">
+                                            <label for="avail_copies" class="mr-4">Available Copies: </label>
+                                        </div>
+                                        <div class="col">
+                                            {{ form.avail_copies }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group row ml-1">
+                                        <div class="col-md-5">
+                                            <label for="total_copies" class="mr-4">Total Copies: </label>
+                                        </div>
+                                        <div class="col">
+                                            {{ form.total_copies }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="number_copies">Number of Copies</label>
+                                <input type="number" v-model="form['number_copies']" class="form-control" id="number_copies" name="number_copies">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Copies</button>
                         </div>
                     </form>
                 </div>
@@ -165,6 +231,8 @@
                     date_published: '',
                     series: '',
                     price: '',
+                    avail_copies: '',
+                    number_copies:'',
                     total_copies: ''
                 }),
                 item_col_1: [
@@ -279,6 +347,41 @@
                 $('#add_book').modal('show');
                 this.form.fill(book);
             },
+            updateCopiesModal(book) {
+                this.form.reset();
+                this.form.clear();
+                $('#update_copies').modal('show');
+                this.form.fill(book);
+            },
+            updateBookCopies() {
+                Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, add new copies!'
+                    }).then((result) => {
+                        if (result.value) {
+                            this.$Progress.start();
+                            this.form.put('api/book/' + this.form.id)
+                                .then(({ data }) => {
+                                    this.$Progress.finish();
+                                    Swal.fire('Updated!', 'New copies has been added!', 'success');
+                                    this.form.reset();
+                                    this.loadBooks();
+                                    $('#update_copies').modal('hide');
+                                })
+                                .catch(err => {
+                                    this.$Progress.fail();
+                                    console.log(err);
+                                    Swal.fire('Failed!', 'There was something wrong.', 'warning');
+                                });
+                        }
+                    })
+
+            },
             updateBook() {
                 Swal.fire({
                         title: 'Are you sure?',
@@ -294,6 +397,7 @@
                             this.form.put('api/book/' + this.form.id)
                                 .then(({ data }) => {
                                     this.$Progress.finish();
+                                    Swal.fire('Updated!', data.message, data.status);
                                     this.loadBooks();
                                     $('#add_book').modal('hide');
                                 })

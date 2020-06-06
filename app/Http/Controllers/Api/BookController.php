@@ -100,11 +100,18 @@ class BookController extends Controller
             'total_copies' => 'required|numeric',
             'isbn' => 'required|numeric|min:30|unique:books,isbn,' .$book->id,
         ]);
+        $number_copies = $request->input('number_copies');
 
-        $book->update($request->all());
+        if ($number_copies > 0) {
+            $book->total_copies += $number_copies;
+            $book->avail_copies += $number_copies;
+            $book->save();
+        } else {
+            $book->update($request->all());
+        }
 
         return response()->json([
-            'status' => true,
+            'status' => 'success',
             'message' => 'Book successfully updated!',
             'data' => $book
         ], Response::HTTP_OK);

@@ -2158,6 +2158,72 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "BookEntry",
   data: function data() {
@@ -2177,6 +2243,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         date_published: '',
         series: '',
         price: '',
+        avail_copies: '',
+        number_copies: '',
         total_copies: ''
       }),
       item_col_1: [{
@@ -2315,8 +2383,50 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       $('#add_book').modal('show');
       this.form.fill(book);
     },
-    updateBook: function updateBook() {
+    updateCopiesModal: function updateCopiesModal(book) {
+      this.form.reset();
+      this.form.clear();
+      $('#update_copies').modal('show');
+      this.form.fill(book);
+    },
+    updateBookCopies: function updateBookCopies() {
       var _this3 = this;
+
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, add new copies!'
+      }).then(function (result) {
+        if (result.value) {
+          _this3.$Progress.start();
+
+          _this3.form.put('api/book/' + _this3.form.id).then(function (_ref3) {
+            var data = _ref3.data;
+
+            _this3.$Progress.finish();
+
+            Swal.fire('Updated!', 'New copies has been added!', 'success');
+
+            _this3.form.reset();
+
+            _this3.loadBooks();
+
+            $('#update_copies').modal('hide');
+          })["catch"](function (err) {
+            _this3.$Progress.fail();
+
+            console.log(err);
+            Swal.fire('Failed!', 'There was something wrong.', 'warning');
+          });
+        }
+      });
+    },
+    updateBook: function updateBook() {
+      var _this4 = this;
 
       Swal.fire({
         title: 'Are you sure?',
@@ -2328,18 +2438,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         confirmButtonText: 'Yes, update it!'
       }).then(function (result) {
         if (result.value) {
-          _this3.$Progress.start();
+          _this4.$Progress.start();
 
-          _this3.form.put('api/book/' + _this3.form.id).then(function (_ref3) {
-            var data = _ref3.data;
+          _this4.form.put('api/book/' + _this4.form.id).then(function (_ref4) {
+            var data = _ref4.data;
 
-            _this3.$Progress.finish();
+            _this4.$Progress.finish();
 
-            _this3.loadBooks();
+            Swal.fire('Updated!', data.message, data.status);
+
+            _this4.loadBooks();
 
             $('#add_book').modal('hide');
           })["catch"](function (err) {
-            _this3.$Progress.fail();
+            _this4.$Progress.fail();
 
             console.log(err);
             Swal.fire('Failed!', 'There was something wrong.', 'warning');
@@ -2348,7 +2460,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       });
     },
     deleteBook: function deleteBook(id) {
-      var _this4 = this;
+      var _this5 = this;
 
       Swal.fire({
         title: 'Are you sure?',
@@ -2360,18 +2472,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         confirmButtonText: 'Yes, delete it!'
       }).then(function (result) {
         if (result.value) {
-          _this4.$Progress.start();
+          _this5.$Progress.start();
 
-          axios["delete"]('api/book/' + id).then(function (_ref4) {
-            var data = _ref4.data;
+          axios["delete"]('api/book/' + id).then(function (_ref5) {
+            var data = _ref5.data;
 
-            _this4.$Progress.finish();
+            _this5.$Progress.finish();
 
             Swal.fire('Deleted!', data.message, data.status);
 
-            _this4.loadBooks();
+            _this5.loadBooks();
           })["catch"](function (err) {
-            _this4.$Progress.fail();
+            _this5.$Progress.fail();
 
             console.log(err);
             Swal.fire('Failed!', 'There was something wrong.', 'warning');
@@ -43204,7 +43316,20 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(book.date_published))]),
                     _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(book.total_copies))]),
+                    _vm._v(" "),
                     _c("td", [
+                      _c("i", {
+                        staticClass: "fas fa-plus",
+                        on: {
+                          click: function($event) {
+                            return _vm.updateCopiesModal(book)
+                          }
+                        }
+                      }),
+                      _vm._v(
+                        "\n                                    |\n                                    "
+                      ),
                       _c("i", {
                         staticClass: "fas fa-edit",
                         on: {
@@ -43537,162 +43662,173 @@ var render = function() {
                                   ],
                                   1
                                 )
-                              : _c(
-                                  "div",
-                                  [
-                                    item.type === "checkbox"
-                                      ? _c("input", {
-                                          directives: [
-                                            {
-                                              name: "model",
-                                              rawName: "v-model",
-                                              value: _vm.form[item.name],
-                                              expression: "form[item.name]"
-                                            }
-                                          ],
-                                          staticClass: "form-control",
-                                          class: {
-                                            "is-invalid": _vm.form.errors.has(
-                                              item.name
-                                            )
-                                          },
-                                          attrs: {
-                                            id: item.name,
-                                            name: item.name,
-                                            type: "checkbox"
-                                          },
-                                          domProps: {
-                                            checked: Array.isArray(
-                                              _vm.form[item.name]
-                                            )
-                                              ? _vm._i(
-                                                  _vm.form[item.name],
-                                                  null
-                                                ) > -1
-                                              : _vm.form[item.name]
-                                          },
-                                          on: {
-                                            change: function($event) {
-                                              var $$a = _vm.form[item.name],
-                                                $$el = $event.target,
-                                                $$c = $$el.checked
-                                                  ? true
-                                                  : false
-                                              if (Array.isArray($$a)) {
-                                                var $$v = null,
-                                                  $$i = _vm._i($$a, $$v)
-                                                if ($$el.checked) {
-                                                  $$i < 0 &&
-                                                    _vm.$set(
-                                                      _vm.form,
-                                                      item.name,
-                                                      $$a.concat([$$v])
-                                                    )
+                              : _c("div", [
+                                  _c(
+                                    "div",
+                                    [
+                                      item.type === "checkbox"
+                                        ? _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.form[item.name],
+                                                expression: "form[item.name]"
+                                              }
+                                            ],
+                                            staticClass: "form-control",
+                                            class: {
+                                              "is-invalid": _vm.form.errors.has(
+                                                item.name
+                                              )
+                                            },
+                                            attrs: {
+                                              disabled:
+                                                _vm.editMode &&
+                                                item.name == "total_copies",
+                                              id: item.name,
+                                              name: item.name,
+                                              type: "checkbox"
+                                            },
+                                            domProps: {
+                                              checked: Array.isArray(
+                                                _vm.form[item.name]
+                                              )
+                                                ? _vm._i(
+                                                    _vm.form[item.name],
+                                                    null
+                                                  ) > -1
+                                                : _vm.form[item.name]
+                                            },
+                                            on: {
+                                              change: function($event) {
+                                                var $$a = _vm.form[item.name],
+                                                  $$el = $event.target,
+                                                  $$c = $$el.checked
+                                                    ? true
+                                                    : false
+                                                if (Array.isArray($$a)) {
+                                                  var $$v = null,
+                                                    $$i = _vm._i($$a, $$v)
+                                                  if ($$el.checked) {
+                                                    $$i < 0 &&
+                                                      _vm.$set(
+                                                        _vm.form,
+                                                        item.name,
+                                                        $$a.concat([$$v])
+                                                      )
+                                                  } else {
+                                                    $$i > -1 &&
+                                                      _vm.$set(
+                                                        _vm.form,
+                                                        item.name,
+                                                        $$a
+                                                          .slice(0, $$i)
+                                                          .concat(
+                                                            $$a.slice($$i + 1)
+                                                          )
+                                                      )
+                                                  }
                                                 } else {
-                                                  $$i > -1 &&
-                                                    _vm.$set(
-                                                      _vm.form,
-                                                      item.name,
-                                                      $$a
-                                                        .slice(0, $$i)
-                                                        .concat(
-                                                          $$a.slice($$i + 1)
-                                                        )
-                                                    )
+                                                  _vm.$set(
+                                                    _vm.form,
+                                                    item.name,
+                                                    $$c
+                                                  )
                                                 }
-                                              } else {
-                                                _vm.$set(
+                                              }
+                                            }
+                                          })
+                                        : item.type === "radio"
+                                        ? _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.form[item.name],
+                                                expression: "form[item.name]"
+                                              }
+                                            ],
+                                            staticClass: "form-control",
+                                            class: {
+                                              "is-invalid": _vm.form.errors.has(
+                                                item.name
+                                              )
+                                            },
+                                            attrs: {
+                                              disabled:
+                                                _vm.editMode &&
+                                                item.name == "total_copies",
+                                              id: item.name,
+                                              name: item.name,
+                                              type: "radio"
+                                            },
+                                            domProps: {
+                                              checked: _vm._q(
+                                                _vm.form[item.name],
+                                                null
+                                              )
+                                            },
+                                            on: {
+                                              change: function($event) {
+                                                return _vm.$set(
                                                   _vm.form,
                                                   item.name,
-                                                  $$c
+                                                  null
                                                 )
                                               }
                                             }
-                                          }
-                                        })
-                                      : item.type === "radio"
-                                      ? _c("input", {
-                                          directives: [
-                                            {
-                                              name: "model",
-                                              rawName: "v-model",
-                                              value: _vm.form[item.name],
-                                              expression: "form[item.name]"
-                                            }
-                                          ],
-                                          staticClass: "form-control",
-                                          class: {
-                                            "is-invalid": _vm.form.errors.has(
-                                              item.name
-                                            )
-                                          },
-                                          attrs: {
-                                            id: item.name,
-                                            name: item.name,
-                                            type: "radio"
-                                          },
-                                          domProps: {
-                                            checked: _vm._q(
-                                              _vm.form[item.name],
-                                              null
-                                            )
-                                          },
-                                          on: {
-                                            change: function($event) {
-                                              return _vm.$set(
-                                                _vm.form,
-                                                item.name,
-                                                null
-                                              )
-                                            }
-                                          }
-                                        })
-                                      : _c("input", {
-                                          directives: [
-                                            {
-                                              name: "model",
-                                              rawName: "v-model",
-                                              value: _vm.form[item.name],
-                                              expression: "form[item.name]"
-                                            }
-                                          ],
-                                          staticClass: "form-control",
-                                          class: {
-                                            "is-invalid": _vm.form.errors.has(
-                                              item.name
-                                            )
-                                          },
-                                          attrs: {
-                                            id: item.name,
-                                            name: item.name,
-                                            type: item.type
-                                          },
-                                          domProps: {
-                                            value: _vm.form[item.name]
-                                          },
-                                          on: {
-                                            input: function($event) {
-                                              if ($event.target.composing) {
-                                                return
+                                          })
+                                        : _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.form[item.name],
+                                                expression: "form[item.name]"
                                               }
-                                              _vm.$set(
-                                                _vm.form,
-                                                item.name,
-                                                $event.target.value
+                                            ],
+                                            staticClass: "form-control",
+                                            class: {
+                                              "is-invalid": _vm.form.errors.has(
+                                                item.name
                                               )
+                                            },
+                                            attrs: {
+                                              disabled:
+                                                _vm.editMode &&
+                                                item.name == "total_copies",
+                                              id: item.name,
+                                              name: item.name,
+                                              type: item.type
+                                            },
+                                            domProps: {
+                                              value: _vm.form[item.name]
+                                            },
+                                            on: {
+                                              input: function($event) {
+                                                if ($event.target.composing) {
+                                                  return
+                                                }
+                                                _vm.$set(
+                                                  _vm.form,
+                                                  item.name,
+                                                  $event.target.value
+                                                )
+                                              }
                                             }
-                                          }
-                                        }),
-                                    _vm._v(" "),
-                                    _c("has-error", {
-                                      attrs: {
-                                        form: _vm.form,
-                                        field: item.name
-                                      }
-                                    })
-                                  ],
-                                  1
-                                )
+                                          }),
+                                      _vm._v(" "),
+                                      _c("has-error", {
+                                        attrs: {
+                                          form: _vm.form,
+                                          field: item.name
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ])
                           ]
                         )
                       }),
@@ -43756,6 +43892,120 @@ var render = function() {
           ])
         ])
       ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: { id: "update_copies", role: "dialog" }
+      },
+      [
+        _c("div", { staticClass: "modal-dialog modal-md" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _c(
+              "form",
+              {
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.updateBookCopies($event)
+                  }
+                }
+              },
+              [
+                _vm._m(4),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("div", { staticClass: "card" }, [
+                    _c("div", { staticClass: "card-header" }, [
+                      _vm._v(
+                        "\n                                Book Details\n                            "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "card-body" }, [
+                      _c("div", { staticClass: "form-group row ml-1" }, [
+                        _vm._m(5),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col" }, [
+                          _vm._v(
+                            "\n                                        " +
+                              _vm._s(_vm.form.title) +
+                              "\n                                    "
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group row ml-1" }, [
+                        _vm._m(6),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col" }, [
+                          _vm._v(
+                            "\n                                        " +
+                              _vm._s(_vm.form.avail_copies) +
+                              "\n                                    "
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group row ml-1" }, [
+                        _vm._m(7),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col" }, [
+                          _vm._v(
+                            "\n                                        " +
+                              _vm._s(_vm.form.total_copies) +
+                              "\n                                    "
+                          )
+                        ])
+                      ])
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", { attrs: { for: "number_copies" } }, [
+                      _vm._v("Number of Copies")
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form["number_copies"],
+                          expression: "form['number_copies']"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "number",
+                        id: "number_copies",
+                        name: "number_copies"
+                      },
+                      domProps: { value: _vm.form["number_copies"] },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.form,
+                            "number_copies",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _vm._m(8)
+              ]
+            )
+          ])
+        ])
+      ]
     )
   ])
 }
@@ -43789,6 +44039,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("Category")]),
         _vm._v(" "),
         _c("th", [_vm._v("Date Pub.")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Copies")]),
         _vm._v(" "),
         _c("th", [_vm._v("Action")])
       ])
@@ -43824,6 +44076,88 @@ var staticRenderFns = [
         )
       ]
     )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header bg-dark text-white" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Acquire New Copies")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [
+          _c(
+            "span",
+            { staticClass: "text-white", attrs: { "aria-hidden": "true" } },
+            [_vm._v("×")]
+          )
+        ]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-5" }, [
+      _c("label", { staticClass: "mr-4", attrs: { for: "book_title" } }, [
+        _vm._v("Book Title: ")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-5" }, [
+      _c("label", { staticClass: "mr-4", attrs: { for: "avail_copies" } }, [
+        _vm._v("Available Copies: ")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-5" }, [
+      _c("label", { staticClass: "mr-4", attrs: { for: "total_copies" } }, [
+        _vm._v("Total Copies: ")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-secondary",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Close")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+        [_vm._v("Add Copies")]
+      )
+    ])
   }
 ]
 render._withStripped = true
