@@ -2263,7 +2263,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         label: "Call Number",
         name: "call_number",
         required: "required",
-        type: "number"
+        type: "text"
       }, {
         label: "Title",
         name: "title",
@@ -2315,12 +2315,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   created: function created() {
+    var _this = this;
+
     this.loadBooks();
+    Fire.$on('refreshBooks', function () {
+      _this.loadBooks();
+    });
   },
   methods: {
     // fetching data
     loadBooks: function loadBooks() {
-      var _this = this;
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
@@ -2330,8 +2335,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context.next = 2;
                 return axios.get('api/book').then(function (_ref) {
                   var data = _ref.data;
-                  _this.books = data.data.book;
-                  _this.book_categories = data.data.book_categories;
+                  _this2.books = data.data.book;
+                  _this2.book_categories = data.data.book_categories;
                 })["catch"](function (err) {
                   return console.log("Error :", err);
                 });
@@ -2351,37 +2356,42 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       $('#add_book').modal('show');
     },
     addBook: function addBook() {
-      var _this2 = this;
+      var _this3 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _this2.$Progress.start();
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, add it!'
+      }).then(function (result) {
+        if (result.value) {
+          _this3.$Progress.start();
 
-                _context2.next = 3;
-                return _this2.form.post('api/book', _this2.form).then(function (_ref2) {
-                  var data = _ref2.data;
+          _this3.form.post('api/book', _this3.form).then(function (_ref2) {
+            var data = _ref2.data;
 
-                  _this2.$Progress.finish();
+            _this3.$Progress.finish();
 
-                  _this2.loadBooks();
+            toast.fire({
+              icon: data.status,
+              title: data.message
+            });
+            Fire.$emit('refreshBooks');
+            $('#add_book').modal('hide');
+          })["catch"](function (err) {
+            _this3.$Progress.fail();
 
-                  $('#add_book').modal('hide');
-                })["catch"](function (err) {
-                  _this2.$Progress.fail();
-
-                  _this2.errors = err.response.data.errors;
-                });
-
-              case 3:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }))();
+            _this3.errors = err.response.data.errors;
+            toast.fire({
+              icon: 'warning',
+              title: 'There was something wrong.'
+            });
+          });
+        }
+      });
     },
     editModal: function editModal(book) {
       this.form.reset();
@@ -2397,7 +2407,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.form.fill(book);
     },
     updateBookCopies: function updateBookCopies() {
-      var _this3 = this;
+      var _this4 = this;
 
       Swal.fire({
         title: 'Are you sure?',
@@ -2409,22 +2419,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         confirmButtonText: 'Yes, add new copies!'
       }).then(function (result) {
         if (result.value) {
-          _this3.$Progress.start();
+          _this4.$Progress.start();
 
-          _this3.form.put('api/book/' + _this3.form.id).then(function (_ref3) {
+          _this4.form.put('api/book/' + _this4.form.id).then(function (_ref3) {
             var data = _ref3.data;
 
-            _this3.$Progress.finish();
+            _this4.$Progress.finish();
 
             Swal.fire('Updated!', 'New copies has been added!', 'success');
 
-            _this3.form.reset();
+            _this4.form.reset();
 
-            _this3.loadBooks();
-
+            Fire.$emit('refreshBooks');
             $('#update_copies').modal('hide');
           })["catch"](function (err) {
-            _this3.$Progress.fail();
+            _this4.$Progress.fail();
 
             console.log(err);
             Swal.fire('Failed!', 'There was something wrong.', 'warning');
@@ -2433,7 +2442,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       });
     },
     updateBook: function updateBook() {
-      var _this4 = this;
+      var _this5 = this;
 
       Swal.fire({
         title: 'Are you sure?',
@@ -2445,29 +2454,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         confirmButtonText: 'Yes, update it!'
       }).then(function (result) {
         if (result.value) {
-          _this4.$Progress.start();
+          _this5.$Progress.start();
 
-          _this4.form.put('api/book/' + _this4.form.id).then(function (_ref4) {
+          _this5.form.put('api/book/' + _this5.form.id).then(function (_ref4) {
             var data = _ref4.data;
 
-            _this4.$Progress.finish();
+            _this5.$Progress.finish();
 
-            Swal.fire('Updated!', data.message, data.status);
-
-            _this4.loadBooks();
-
+            toast.fire({
+              icon: data.status,
+              title: data.message
+            });
+            Fire.$emit('refreshBooks');
             $('#add_book').modal('hide');
           })["catch"](function (err) {
-            _this4.$Progress.fail();
+            _this5.$Progress.fail();
 
             console.log(err);
-            Swal.fire('Failed!', 'There was something wrong.', 'warning');
+            toast.fire({
+              icon: 'warning',
+              title: 'There was something wrong.'
+            });
           });
         }
       });
     },
     deleteBook: function deleteBook(id) {
-      var _this5 = this;
+      var _this6 = this;
 
       Swal.fire({
         title: 'Are you sure?',
@@ -2479,21 +2492,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         confirmButtonText: 'Yes, delete it!'
       }).then(function (result) {
         if (result.value) {
-          _this5.$Progress.start();
+          _this6.$Progress.start();
 
           axios["delete"]('api/book/' + id).then(function (_ref5) {
             var data = _ref5.data;
 
-            _this5.$Progress.finish();
+            _this6.$Progress.finish();
 
-            Swal.fire('Deleted!', data.message, data.status);
-
-            _this5.loadBooks();
+            toast.fire({
+              icon: data.status,
+              title: data.message
+            });
+            Fire.$emit('refreshBooks');
           })["catch"](function (err) {
-            _this5.$Progress.fail();
+            _this6.$Progress.fail();
 
             console.log(err);
-            Swal.fire('Failed!', 'There was something wrong.', 'warning');
+            toast.fire({
+              icon: 'warning',
+              title: 'There was something wrong.'
+            });
           });
         }
       });
@@ -59677,6 +59695,7 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_router__WEBPACK_IMPORTED_MODU
 
 
 window.Form = vform__WEBPACK_IMPORTED_MODULE_2__["Form"];
+window.Fire = new vue__WEBPACK_IMPORTED_MODULE_1___default.a();
 vue__WEBPACK_IMPORTED_MODULE_1___default.a.component(vform__WEBPACK_IMPORTED_MODULE_2__["HasError"].name, vform__WEBPACK_IMPORTED_MODULE_2__["HasError"]);
 vue__WEBPACK_IMPORTED_MODULE_1___default.a.component(vform__WEBPACK_IMPORTED_MODULE_2__["AlertError"].name, vform__WEBPACK_IMPORTED_MODULE_2__["AlertError"]);
 
@@ -59688,6 +59707,18 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_progressbar__WEBPACK_IMPORTED
 
 
 window.Swal = sweetalert2__WEBPACK_IMPORTED_MODULE_4___default.a;
+var Toast = sweetalert2__WEBPACK_IMPORTED_MODULE_4___default.a.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  onOpen: function onOpen(toast) {
+    toast.addEventListener('mouseenter', sweetalert2__WEBPACK_IMPORTED_MODULE_4___default.a.stopTimer);
+    toast.addEventListener('mouseleave', sweetalert2__WEBPACK_IMPORTED_MODULE_4___default.a.resumeTimer);
+  }
+});
+window.toast = Toast;
 var routes = [{
   path: '/',
   name: "Dashboard",

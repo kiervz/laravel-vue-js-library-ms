@@ -6,6 +6,7 @@ use App\Book;
 use App\BookCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Book\BookRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class BookController extends Controller
@@ -19,39 +20,18 @@ class BookController extends Controller
     public function index()
     {
         $book_categories = BookCategory::all();
-        $book = Book::all();
-
         return response()->json([
             "status" => true,
             "messages" => "success",
             "data" => [
-                "book_categories" => $book_categories,
+                'book_categories' => $book_categories,
                 "book" => Book::with('category')->get()
             ]
         ], Response::HTTP_OK);
     }
 
-    public function create()
+    public function store(BookRequest $request)
     {
-
-    }
-
-    public function store(Request $request)
-    {
-        $this->validate($request, [
-            'isbn' => 'required|numeric|min:30|unique:books',
-            'call_number' => 'required|numeric|min:30',
-            'title' => 'required|string|max:255',
-            'author' => 'required|string|max:150',
-            'publisher' => 'required|string|max:150',
-            'description' => 'required|string|max:255',
-            'category_id' => 'required|integer',
-            'date_published' => 'required',
-            'series' => 'required|string|max:15',
-            'price' => 'required|numeric',
-            'total_copies' => 'required|numeric'
-        ]);
-
         $status = "error";
         $message = "Book failed to create.";
         $code = Response::HTTP_CONFLICT;
@@ -73,36 +53,10 @@ class BookController extends Controller
         ], $code);
     }
 
-    public function show(Book $book)
-    {
-
-    }
-
-    public function edit(Book $book)
-    {
-
-    }
-
-    public function update(Request $request, $id)
+    public function update(BookRequest $request, $id)
     {
         $number_copies = $request->input('number_copies');
         $book = Book::findOrFail($id);
-
-        if (!$number_copies > 0) {
-            $this->validate($request, [
-                'call_number' => 'required|string|min:7|max:30',
-                'title' => 'required|string|max:255',
-                'author' => 'required|string|max:150',
-                'publisher' => 'required|string|max:150',
-                'description' => 'required|string|max:255',
-                'category_id' => 'required|integer',
-                'date_published' => 'required',
-                'series' => 'required|string|max:15',
-                'price' => 'required|numeric',
-                'total_copies' => 'required|numeric',
-                'isbn' => 'required|string|min:9|max:13|unique:books,isbn,' .$book->id,
-            ]);
-        }
 
         if ($number_copies > 0) {
             $book->total_copies += $number_copies;

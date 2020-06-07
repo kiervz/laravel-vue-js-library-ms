@@ -253,7 +253,7 @@
                         label: "Call Number",
                         name: "call_number",
                         required: "required",
-                        type: "number"
+                        type: "text"
                     },
                     {
                         label: "Title",
@@ -317,6 +317,9 @@
         },
         created() {
             this.loadBooks();
+            Fire.$on('refreshBooks', () => {
+                this.loadBooks();
+            })
         },
         methods: {
             // fetching data
@@ -334,18 +337,39 @@
                 this.editMode = false;
                 $('#add_book').modal('show');
             },
-            async addBook() {
-                this.$Progress.start();
-                await this.form.post('api/book', this.form)
-                    .then(({ data }) => {
-                        this.$Progress.finish();
-                        this.loadBooks();
-                        $('#add_book').modal('hide');
-                    })
-                    .catch(err => {
-                        this.$Progress.fail();
-                        this.errors = err.response.data.errors;
-                    })
+            addBook() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, add it!'
+                }).then((result) => {
+                    if (result.value) {
+                        this.$Progress.start();
+                        this.form.post('api/book', this.form)
+                            .then(({ data }) => {
+                                this.$Progress.finish();
+                                toast.fire({
+                                    icon: data.status,
+                                    title: data.message
+                                });
+                                Fire.$emit('refreshBooks');
+                                $('#add_book').modal('hide');
+                            })
+                            .catch(err => {
+                                this.$Progress.fail();
+                                this.errors = err.response.data.errors;
+                                toast.fire({
+                                    icon: 'warning',
+                                    title: 'There was something wrong.'
+                                });
+                            })
+                    }
+                });
+
             },
             editModal(book) {
                 this.form.reset();
@@ -377,7 +401,7 @@
                                     this.$Progress.finish();
                                     Swal.fire('Updated!', 'New copies has been added!', 'success');
                                     this.form.reset();
-                                    this.loadBooks();
+                                    Fire.$emit('refreshBooks');
                                     $('#update_copies').modal('hide');
                                 })
                                 .catch(err => {
@@ -404,18 +428,23 @@
                             this.form.put('api/book/' + this.form.id)
                                 .then(({ data }) => {
                                     this.$Progress.finish();
-                                    Swal.fire('Updated!', data.message, data.status);
-                                    this.loadBooks();
+                                    toast.fire({
+                                        icon: data.status,
+                                        title: data.message
+                                    });
+                                    Fire.$emit('refreshBooks');
                                     $('#add_book').modal('hide');
                                 })
                                 .catch(err => {
                                     this.$Progress.fail();
                                     console.log(err);
-                                    Swal.fire('Failed!', 'There was something wrong.', 'warning');
+                                    toast.fire({
+                                        icon: 'warning',
+                                        title: 'There was something wrong.'
+                                    });
                                 });
                         }
                     })
-
             },
             deleteBook(id) {
                 Swal.fire({
@@ -432,13 +461,19 @@
                             axios.delete('api/book/' + id)
                                 .then(({ data }) => {
                                     this.$Progress.finish();
-                                    Swal.fire('Deleted!', data.message, data.status);
-                                    this.loadBooks();
+                                    toast.fire({
+                                        icon: data.status,
+                                        title: data.message
+                                    });
+                                    Fire.$emit('refreshBooks');
                                 })
                                 .catch(err => {
                                     this.$Progress.fail();
                                     console.log(err);
-                                    Swal.fire('Failed!', 'There was something wrong.', 'warning');
+                                    toast.fire({
+                                        icon: 'warning',
+                                        title: 'There was something wrong.'
+                                    });
                                 });
                         }
                     })
