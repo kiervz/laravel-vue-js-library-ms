@@ -26,7 +26,7 @@ class BookController extends Controller
             "messages" => "success",
             "data" => [
                 "book_categories" => $book_categories,
-                "book" => $book
+                "book" => Book::with('category')->get()
             ]
         ], Response::HTTP_OK);
     }
@@ -85,22 +85,24 @@ class BookController extends Controller
 
     public function update(Request $request, $id)
     {
+        $number_copies = $request->input('number_copies');
         $book = Book::findOrFail($id);
 
-        $this->validate($request, [
-            'call_number' => 'required|numeric|min:30',
-            'title' => 'required|string|max:255',
-            'author' => 'required|string|max:150',
-            'publisher' => 'required|string|max:150',
-            'description' => 'required|string|max:255',
-            'category_id' => 'required|integer',
-            'date_published' => 'required',
-            'series' => 'required|string|max:15',
-            'price' => 'required|numeric',
-            'total_copies' => 'required|numeric',
-            'isbn' => 'required|numeric|min:30|unique:books,isbn,' .$book->id,
-        ]);
-        $number_copies = $request->input('number_copies');
+        if (!$number_copies > 0) {
+            $this->validate($request, [
+                'call_number' => 'required|string|min:7|max:30',
+                'title' => 'required|string|max:255',
+                'author' => 'required|string|max:150',
+                'publisher' => 'required|string|max:150',
+                'description' => 'required|string|max:255',
+                'category_id' => 'required|integer',
+                'date_published' => 'required',
+                'series' => 'required|string|max:15',
+                'price' => 'required|numeric',
+                'total_copies' => 'required|numeric',
+                'isbn' => 'required|string|min:9|max:13|unique:books,isbn,' .$book->id,
+            ]);
+        }
 
         if ($number_copies > 0) {
             $book->total_copies += $number_copies;

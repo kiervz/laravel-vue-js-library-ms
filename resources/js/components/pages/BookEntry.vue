@@ -38,7 +38,7 @@
                                     <td>{{ book.title }}</td>
                                     <td>{{ book.author }}</td>
                                     <td>{{ book.publisher }}</td>
-                                    <td>{{ book.category_id }}</td>
+                                    <td>{{ book.category.category }}</td>
                                     <td>{{ book.date_published }}</td>
                                     <td>{{ book.total_copies }}</td>
                                     <td>
@@ -196,7 +196,14 @@
 
                             <div class="form-group">
                                 <label for="number_copies">Number of Copies</label>
-                                <input type="number" v-model="form['number_copies']" class="form-control" id="number_copies" name="number_copies">
+                                <input
+                                    required
+                                    type="number"
+                                    v-model="form['number_copies']"
+                                    class="form-control"
+                                    id="number_copies"
+                                    name="number_copies"
+                                >
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -240,7 +247,7 @@
                         label: "ISBN",
                         name: "isbn",
                         required: "required",
-                        type: "text"
+                        type: "number"
                     },
                     {
                         label: "Call Number",

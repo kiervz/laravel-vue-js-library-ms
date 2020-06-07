@@ -2224,6 +2224,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "BookEntry",
   data: function data() {
@@ -2251,7 +2258,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         label: "ISBN",
         name: "isbn",
         required: "required",
-        type: "text"
+        type: "number"
       }, {
         label: "Call Number",
         name: "call_number",
@@ -43312,7 +43319,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(book.publisher))]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(book.category_id))]),
+                    _c("td", [_vm._v(_vm._s(book.category.category))]),
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(book.date_published))]),
                     _vm._v(" "),
@@ -43979,6 +43986,7 @@ var render = function() {
                       ],
                       staticClass: "form-control",
                       attrs: {
+                        required: "",
                         type: "number",
                         id: "number_copies",
                         name: "number_copies"
