@@ -31,7 +31,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="book in books" v-bind:key="book.id">
+                                <tr v-for="book in books" :key="book.id">
                                     <td>{{ book.id }}</td>
                                     <td>{{ book.call_number }}</td>
                                     <td>{{ book.isbn }}</td>
@@ -224,7 +224,7 @@
         data() {
             return {
                 books: {},
-                book_categories: {},
+                book_categories: [],
                 // Create a new form instance
                 form: new Form({
                     id: '',
@@ -312,6 +312,7 @@
                         type: "number"
                     },
                 ],
+                limit: 2,
                 editMode: true
             }
         },
@@ -322,14 +323,13 @@
             })
         },
         methods: {
-            // fetching data
             async loadBooks() {
                 await axios.get('api/book')
                         .then(({ data }) => {
-                            this.books = data.data.book;
+                            this.books = data.data.books;
                             this.book_categories = data.data.book_categories;
                         })
-                        .catch(err => console.log("Error :", err));
+                        .catch(err => console.log("Error :", err))
             },
             addModal() {
                 this.form.reset();

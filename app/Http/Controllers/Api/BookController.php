@@ -24,8 +24,8 @@ class BookController extends Controller
             "status" => true,
             "messages" => "success",
             "data" => [
-                'book_categories' => $book_categories,
-                "book" => Book::with('category')->get()
+                "book_categories" => $book_categories,
+                "books" => Book::with('category')->get()
             ]
         ], Response::HTTP_OK);
     }
@@ -33,7 +33,7 @@ class BookController extends Controller
     public function store(BookRequest $request)
     {
         $status = "error";
-        $message = "Book failed to create.";
+        $message = "Book failed to c    reate.";
         $code = Response::HTTP_CONFLICT;
         $data = $request->all();
 

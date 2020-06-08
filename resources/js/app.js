@@ -58,10 +58,12 @@ const routes = [
     { path: '/settings', name: 'Settings', component: require('./components/pages/Settings.vue').default }
 ]
 
+Vue.component('pagination', require('laravel-vue-pagination'));
+
 const router = new VueRouter({
     mode: 'history',
     routes // short for `routes: routes`
-  })
+})
 
 /**
  * The following block of code may be used to automatically register your
