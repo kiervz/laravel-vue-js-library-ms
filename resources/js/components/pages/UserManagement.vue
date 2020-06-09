@@ -58,7 +58,7 @@
         <div class="modal fade" id="add_user" role="dialog">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <form @submit.prevent="">
+                    <form @submit.prevent="editMode ? updateUser() : addUser()">
                         <!-- Modal Header -->
                         <div class="modal-header bg-dark text-white">
                             <h5 v-show="!editMode" class="modal-title">Register User</h5>
@@ -73,11 +73,79 @@
                             <div class="row">
                                 <!-- first row -->
                                 <div class="col-6">
-
+                                    <div v-for="(item, $index) in item_col_1" :key="$index" class="form-group">
+                                        <div v-if="item.type == 'dropdown'">
+                                            <label :for="item.name">{{ item.label }}</label>
+                                            <select
+                                                :name="item.name"
+                                                :id="item.name"
+                                                v-model="form[item.name]"
+                                                class="form-control"
+                                                :class="{ 'is-invalid': form.errors.has(item.name) }"
+                                            >
+                                                <option value="" disabled selected>Select User Type</option>
+                                                <option value="1">Administrator</option>
+                                                <option value="2">Librarian</option>
+                                                <option value="3">Student Assistant</option>
+                                            </select>
+                                            <has-error :form="form" :field="item.name"></has-error>
+                                        </div>
+                                        <div v-else-if="item.type == 'radio'">
+                                            <label :for="item.name">{{ item.label }}</label>
+                                            <div class="form-group">
+                                                <div class="form-check form-check-inline">
+                                                    <input
+                                                        class="form-check-input"
+                                                        :type="item.type"
+                                                        :name="item.name"
+                                                        :id="item.id[$index]"
+                                                        v-model="form[item.name]"
+                                                        value="Male">
+                                                    <label class="form-check-label" :for="item.name">Male</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input
+                                                        class="form-check-input"
+                                                        :type="item.type"
+                                                        :name="item.name"
+                                                        :id="item.id[$index]"
+                                                        v-model="form[item.name]"
+                                                        value="Female">
+                                                    <label class="form-check-label" :for="item.name">Female</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div v-else>
+                                            <label :for="item.name">{{ item.label }}</label>
+                                            <input
+                                                :id="item.name"
+                                                :name="item.name"
+                                                :type="item.type"
+                                                v-model="form[item.name]"
+                                                class="form-control"
+                                                :class="{ 'is-invalid': form.errors.has(item.name) }"
+                                            >
+                                            <has-error :form="form" :field="item.name"></has-error>
+                                        </div>
+                                    </div>
                                 </div>
                                 <!-- second row -->
                                 <div class="col-6">
-
+                                    <div v-for="(item, $index) in item_col_2" :key="$index">
+                                        <div class="form-group">
+                                            <label :for="item.name">{{ item.label }}</label>
+                                            <input
+                                                :disabled="editMode && item.name == 'password'"
+                                                :id="item.name"
+                                                :name="item.name"
+                                                :type="item.type"
+                                                v-model="form[item.name]"
+                                                class="form-control"
+                                                :class="{ 'is-invalid': form.errors.has(item.name) }"
+                                            >
+                                            <has-error :form="form" :field="item.name"></has-error>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -105,25 +173,181 @@
         data() {
             return {
                 users: {},
+                form: new Form({
+                    id: '',
+                    firstname: '',
+                    middlename: '',
+                    lastname: '',
+                    user_type_id: '',
+                    gender: '',
+                    contact_no: '',
+                    birthday: '',
+                    username: '',
+                    email: '',
+                    password: '',
+                }),
+                item_col_1: [
+                    {
+                        label: "Firstname",
+                        name: "firstname",
+                        required: "required",
+                        type: "text"
+                    },
+                    {
+                        label: "Middlename",
+                        name: "middlename",
+                        required: "required",
+                        type: "text"
+                    },
+                    {
+                        label: "Lastname",
+                        name: "lastname",
+                        required: "required",
+                        type: "text"
+                    },
+                    {
+                        label: "User Type",
+                        name: "user_type_id",
+                        required: "required",
+                        type: "dropdown"
+                    },
+                    {
+                        label: "Gender",
+                        name: "gender",
+                        required: "required",
+                        type: "radio",
+                        id : [
+                            {
+                                name: "male"
+                            },
+                            {
+                                name: "female"
+                            }
+                        ]
+                    },
+                ],
+                item_col_2: [
+                    {
+                        label: "Contact No",
+                        name: "contact_no",
+                        required: "required",
+                        type: "number"
+                    },
+                    {
+                        label: "Birthday",
+                        name: "birthday",
+                        required: "required",
+                        type: "date"
+                    },
+                    {
+                        label: "Username",
+                        name: "username",
+                        required: "required",
+                        type: "text"
+                    },
+                    {
+                        label: "Email",
+                        name: "email",
+                        required: "required",
+                        type: "email"
+                    },
+                    {
+                        label: "Password",
+                        name: "password",
+                        required: "required",
+                        type: "password"
+                    },
+                ],
                 errors: [],
-                editMode: true,
+                editMode: false,
             }
         },
         created() {
             this.loadUsers();
+            Fire.$on('refreshUsers', () => {
+                this.loadUsers();
+            });
         },
         methods: {
+            async loadUsers() {
+                    this.$Progress.start();
+                    await axios.get('api/user')
+                        .then(({ data }) => {
+                            this.$Progress.finish();
+                            this.users = data.data
+                        })
+                        .catch(err => {
+                            this.$Progress.fail();
+                            console.log(err)
+                        });
+                },
             addModal() {
                 $('#add_user').modal('show');
             },
-            loadUsers() {
-                axios.get('api/user')
-                    .then(({ data }) => {
-                        this.users = data.data
-                        console.log(data.data);
-                    })
-                    .catch(err => console.log(err));
+            addUser() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, add it!'
+                }).then((result) => {
+                    if (result.value) {
+                        this.$Progress.start();
+                        this.form.post('api/user', this.form)
+                            .then(({ data }) => {
+                                this.$Progress.finish();
+                                toast.fire({
+                                    icon: data.status,
+                                    title: data.message
+                                });
+                                $('#add_user').modal('hide');
+                            })
+                            .catch(err => {
+                                this.$Progress.fail();
+                                console.log(err);
+                            });
+                    }
+                })
             },
+            editModal(book) {
+                this.form.reset();
+                this.form.clear();
+                this.editMode = true;
+                $('#add_user').modal('show');
+                this.form.fill(book);
+            },
+            updateUser() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, update it!'
+                }).then((result) => {
+                    if (result.value) {
+                        this.$Progress.start();
+                        this.form.put('api/user/'+ this.form.id)
+                            .then(({ data }) => {
+                                this.$Progress.finish();
+                                toast.fire({
+                                    icon: data.status,
+                                    title: data.message
+                                });
+                                Fire.$emit('refreshUsers');
+                                $('#add_user').modal('hide');
+                            })
+                            .catch(err => {
+                                this.$Progress.fail();
+                                console.log(err);
+                            });
+                    }
+                })
+            }
         }
     }
 </script>

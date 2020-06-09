@@ -32,7 +32,25 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        $status = "error";
+        $message = "User failed to create.";
+        $code = Response::HTTP_CONFLICT;
+        $data = $request->all();
 
+        $user = User::create($request->all());
+
+        if ($user) {
+            $status = "success";
+            $message = "User successfully created";
+            $code = Response::HTTP_CREATED;
+            $data = $user;
+        }
+
+        return response()->json([
+            'status' => $status,
+            'message' => $message,
+            'data' => $user
+        ], $code);
     }
 
     public function show($id)
@@ -47,7 +65,14 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
+        $user = User::findOrFail($id);
+        $user->update($request->all());
 
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User successfully updated!',
+            'data' => $user
+        ], Response::HTTP_OK);
     }
 
     public function destroy($id)

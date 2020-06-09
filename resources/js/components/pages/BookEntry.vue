@@ -324,12 +324,18 @@
         },
         methods: {
             async loadBooks() {
+                this.$Progress.start();
                 await axios.get('api/book')
                         .then(({ data }) => {
+                            this.$Progress.finish();
                             this.books = data.data.books;
                             this.book_categories = data.data.book_categories;
+                            this.$Progress.finish();
                         })
-                        .catch(err => console.log("Error :", err))
+                        .catch(err => {
+                            console.log("Error :", err)
+                            this.$Progress.fail();
+                        })
             },
             addModal() {
                 this.form.reset();

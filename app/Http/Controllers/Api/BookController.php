@@ -33,7 +33,7 @@ class BookController extends Controller
     public function store(BookRequest $request)
     {
         $status = "error";
-        $message = "Book failed to c    reate.";
+        $message = "Book failed to create.";
         $code = Response::HTTP_CONFLICT;
         $data = $request->all();
 

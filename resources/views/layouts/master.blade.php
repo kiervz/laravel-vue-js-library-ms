@@ -31,7 +31,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <li class="nav-item dropdown">
                     <a href="javascript:void(0)" class="user-panel h-auto py-0 nav-link" data-toggle="dropdown">
                         <img
-                            src="{{ auth()->user()->user_image == null ? '/img/profile.jpg' : '/images/profile/'.auth()->user()->user_image }}"
+                            src="{{ Auth::user()->user_image == null ? '/img/profile.jpg' : '/img/'.auth()->user()->user_image }}"
                             class="img-circle elevation-2"
                             id="user_profile_picture"
                             alt="User Image"
@@ -70,7 +70,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <!-- Sidebar user panel (optional) -->
                     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                         <div class="image">
-                            <img src="/img/profile.jpg" class="img-circle elevation-2" alt="User Image">
+                            <img src="/img/{{ Auth::user()->user_image }}" class="img-circle elevation-2" alt="User Image">
                         </div>
                         <div class="info">
                             <a href="#" class="d-block">{{ Auth::user()->firstname . ' ' . Auth::user()->lastname }}</a>

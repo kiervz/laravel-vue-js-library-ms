@@ -2332,16 +2332,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                _this2.$Progress.start();
+
+                _context.next = 3;
                 return axios.get('api/book').then(function (_ref) {
                   var data = _ref.data;
+
+                  _this2.$Progress.finish();
+
                   _this2.books = data.data.books;
                   _this2.book_categories = data.data.book_categories;
+
+                  _this2.$Progress.finish();
                 })["catch"](function (err) {
-                  return console.log("Error :", err);
+                  console.log("Error :", err);
+
+                  _this2.$Progress.fail();
                 });
 
-              case 2:
+              case 3:
               case "end":
                 return _context.stop();
             }
@@ -2695,6 +2704,82 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2801,26 +2886,195 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       users: {},
+      form: new Form({
+        id: '',
+        firstname: '',
+        middlename: '',
+        lastname: '',
+        user_type_id: '',
+        gender: '',
+        contact_no: '',
+        birthday: '',
+        username: '',
+        email: '',
+        password: ''
+      }),
+      item_col_1: [{
+        label: "Firstname",
+        name: "firstname",
+        required: "required",
+        type: "text"
+      }, {
+        label: "Middlename",
+        name: "middlename",
+        required: "required",
+        type: "text"
+      }, {
+        label: "Lastname",
+        name: "lastname",
+        required: "required",
+        type: "text"
+      }, {
+        label: "User Type",
+        name: "user_type_id",
+        required: "required",
+        type: "dropdown"
+      }, {
+        label: "Gender",
+        name: "gender",
+        required: "required",
+        type: "radio",
+        id: [{
+          name: "male"
+        }, {
+          name: "female"
+        }]
+      }],
+      item_col_2: [{
+        label: "Contact No",
+        name: "contact_no",
+        required: "required",
+        type: "number"
+      }, {
+        label: "Birthday",
+        name: "birthday",
+        required: "required",
+        type: "date"
+      }, {
+        label: "Username",
+        name: "username",
+        required: "required",
+        type: "text"
+      }, {
+        label: "Email",
+        name: "email",
+        required: "required",
+        type: "email"
+      }, {
+        label: "Password",
+        name: "password",
+        required: "required",
+        type: "password"
+      }],
       errors: [],
-      editMode: true
+      editMode: false
     };
   },
   created: function created() {
+    var _this = this;
+
     this.loadUsers();
+    Fire.$on('refreshUsers', function () {
+      _this.loadUsers();
+    });
   },
   methods: {
+    loadUsers: function loadUsers() {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _this2.$Progress.start();
+
+                _context.next = 3;
+                return axios.get('api/user').then(function (_ref) {
+                  var data = _ref.data;
+
+                  _this2.$Progress.finish();
+
+                  _this2.users = data.data;
+                })["catch"](function (err) {
+                  _this2.$Progress.fail();
+
+                  console.log(err);
+                });
+
+              case 3:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
     addModal: function addModal() {
       $('#add_user').modal('show');
     },
-    loadUsers: function loadUsers() {
-      var _this = this;
+    addUser: function addUser() {
+      var _this3 = this;
 
-      axios.get('api/user').then(function (_ref) {
-        var data = _ref.data;
-        _this.users = data.data;
-        console.log(data.data);
-      })["catch"](function (err) {
-        return console.log(err);
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, add it!'
+      }).then(function (result) {
+        if (result.value) {
+          _this3.$Progress.start();
+
+          _this3.form.post('api/user', _this3.form).then(function (_ref2) {
+            var data = _ref2.data;
+
+            _this3.$Progress.finish();
+
+            toast.fire({
+              icon: data.status,
+              title: data.message
+            });
+            $('#add_user').modal('hide');
+          })["catch"](function (err) {
+            _this3.$Progress.fail();
+
+            console.log(err);
+          });
+        }
+      });
+    },
+    editModal: function editModal(book) {
+      this.form.reset();
+      this.form.clear();
+      this.editMode = true;
+      $('#add_user').modal('show');
+      this.form.fill(book);
+    },
+    updateUser: function updateUser() {
+      var _this4 = this;
+
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, update it!'
+      }).then(function (result) {
+        if (result.value) {
+          _this4.$Progress.start();
+
+          _this4.form.put('api/user/' + _this4.form.id).then(function (_ref3) {
+            var data = _ref3.data;
+
+            _this4.$Progress.finish();
+
+            toast.fire({
+              icon: data.status,
+              title: data.message
+            });
+            Fire.$emit('refreshUsers');
+            $('#add_user').modal('hide');
+          })["catch"](function (err) {
+            _this4.$Progress.fail();
+
+            console.log(err);
+          });
+        }
       });
     }
   }
@@ -45241,6 +45495,7 @@ var render = function() {
                 on: {
                   submit: function($event) {
                     $event.preventDefault()
+                    _vm.editMode ? _vm.updateUser() : _vm.addUser()
                   }
                 }
               },
@@ -45281,7 +45536,746 @@ var render = function() {
                   _vm._m(3)
                 ]),
                 _vm._v(" "),
-                _vm._m(4),
+                _c("div", { staticClass: "modal-body text-muted" }, [
+                  _c("div", { staticClass: "row" }, [
+                    _c(
+                      "div",
+                      { staticClass: "col-6" },
+                      _vm._l(_vm.item_col_1, function(item, $index) {
+                        return _c(
+                          "div",
+                          { key: $index, staticClass: "form-group" },
+                          [
+                            item.type == "dropdown"
+                              ? _c(
+                                  "div",
+                                  [
+                                    _c("label", { attrs: { for: item.name } }, [
+                                      _vm._v(_vm._s(item.label))
+                                    ]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.form[item.name],
+                                            expression: "form[item.name]"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        class: {
+                                          "is-invalid": _vm.form.errors.has(
+                                            item.name
+                                          )
+                                        },
+                                        attrs: {
+                                          name: item.name,
+                                          id: item.name
+                                        },
+                                        on: {
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.$set(
+                                              _vm.form,
+                                              item.name,
+                                              $event.target.multiple
+                                                ? $$selectedVal
+                                                : $$selectedVal[0]
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "option",
+                                          {
+                                            attrs: {
+                                              value: "",
+                                              disabled: "",
+                                              selected: ""
+                                            }
+                                          },
+                                          [_vm._v("Select User Type")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "1" } },
+                                          [_vm._v("Administrator")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "2" } },
+                                          [_vm._v("Librarian")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "3" } },
+                                          [_vm._v("Student Assistant")]
+                                        )
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c("has-error", {
+                                      attrs: {
+                                        form: _vm.form,
+                                        field: item.name
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              : item.type == "radio"
+                              ? _c("div", [
+                                  _c("label", { attrs: { for: item.name } }, [
+                                    _vm._v(_vm._s(item.label))
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "form-group" }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "form-check form-check-inline"
+                                      },
+                                      [
+                                        item.type === "checkbox"
+                                          ? _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value: _vm.form[item.name],
+                                                  expression: "form[item.name]"
+                                                }
+                                              ],
+                                              staticClass: "form-check-input",
+                                              attrs: {
+                                                name: item.name,
+                                                id: item.id[$index],
+                                                value: "Male",
+                                                type: "checkbox"
+                                              },
+                                              domProps: {
+                                                checked: Array.isArray(
+                                                  _vm.form[item.name]
+                                                )
+                                                  ? _vm._i(
+                                                      _vm.form[item.name],
+                                                      "Male"
+                                                    ) > -1
+                                                  : _vm.form[item.name]
+                                              },
+                                              on: {
+                                                change: function($event) {
+                                                  var $$a = _vm.form[item.name],
+                                                    $$el = $event.target,
+                                                    $$c = $$el.checked
+                                                      ? true
+                                                      : false
+                                                  if (Array.isArray($$a)) {
+                                                    var $$v = "Male",
+                                                      $$i = _vm._i($$a, $$v)
+                                                    if ($$el.checked) {
+                                                      $$i < 0 &&
+                                                        _vm.$set(
+                                                          _vm.form,
+                                                          item.name,
+                                                          $$a.concat([$$v])
+                                                        )
+                                                    } else {
+                                                      $$i > -1 &&
+                                                        _vm.$set(
+                                                          _vm.form,
+                                                          item.name,
+                                                          $$a
+                                                            .slice(0, $$i)
+                                                            .concat(
+                                                              $$a.slice($$i + 1)
+                                                            )
+                                                        )
+                                                    }
+                                                  } else {
+                                                    _vm.$set(
+                                                      _vm.form,
+                                                      item.name,
+                                                      $$c
+                                                    )
+                                                  }
+                                                }
+                                              }
+                                            })
+                                          : item.type === "radio"
+                                          ? _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value: _vm.form[item.name],
+                                                  expression: "form[item.name]"
+                                                }
+                                              ],
+                                              staticClass: "form-check-input",
+                                              attrs: {
+                                                name: item.name,
+                                                id: item.id[$index],
+                                                value: "Male",
+                                                type: "radio"
+                                              },
+                                              domProps: {
+                                                checked: _vm._q(
+                                                  _vm.form[item.name],
+                                                  "Male"
+                                                )
+                                              },
+                                              on: {
+                                                change: function($event) {
+                                                  return _vm.$set(
+                                                    _vm.form,
+                                                    item.name,
+                                                    "Male"
+                                                  )
+                                                }
+                                              }
+                                            })
+                                          : _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value: _vm.form[item.name],
+                                                  expression: "form[item.name]"
+                                                }
+                                              ],
+                                              staticClass: "form-check-input",
+                                              attrs: {
+                                                name: item.name,
+                                                id: item.id[$index],
+                                                value: "Male",
+                                                type: item.type
+                                              },
+                                              domProps: {
+                                                value: _vm.form[item.name]
+                                              },
+                                              on: {
+                                                input: function($event) {
+                                                  if ($event.target.composing) {
+                                                    return
+                                                  }
+                                                  _vm.$set(
+                                                    _vm.form,
+                                                    item.name,
+                                                    $event.target.value
+                                                  )
+                                                }
+                                              }
+                                            }),
+                                        _vm._v(" "),
+                                        _c(
+                                          "label",
+                                          {
+                                            staticClass: "form-check-label",
+                                            attrs: { for: item.name }
+                                          },
+                                          [_vm._v("Male")]
+                                        )
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "form-check form-check-inline"
+                                      },
+                                      [
+                                        item.type === "checkbox"
+                                          ? _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value: _vm.form[item.name],
+                                                  expression: "form[item.name]"
+                                                }
+                                              ],
+                                              staticClass: "form-check-input",
+                                              attrs: {
+                                                name: item.name,
+                                                id: item.id[$index],
+                                                value: "Female",
+                                                type: "checkbox"
+                                              },
+                                              domProps: {
+                                                checked: Array.isArray(
+                                                  _vm.form[item.name]
+                                                )
+                                                  ? _vm._i(
+                                                      _vm.form[item.name],
+                                                      "Female"
+                                                    ) > -1
+                                                  : _vm.form[item.name]
+                                              },
+                                              on: {
+                                                change: function($event) {
+                                                  var $$a = _vm.form[item.name],
+                                                    $$el = $event.target,
+                                                    $$c = $$el.checked
+                                                      ? true
+                                                      : false
+                                                  if (Array.isArray($$a)) {
+                                                    var $$v = "Female",
+                                                      $$i = _vm._i($$a, $$v)
+                                                    if ($$el.checked) {
+                                                      $$i < 0 &&
+                                                        _vm.$set(
+                                                          _vm.form,
+                                                          item.name,
+                                                          $$a.concat([$$v])
+                                                        )
+                                                    } else {
+                                                      $$i > -1 &&
+                                                        _vm.$set(
+                                                          _vm.form,
+                                                          item.name,
+                                                          $$a
+                                                            .slice(0, $$i)
+                                                            .concat(
+                                                              $$a.slice($$i + 1)
+                                                            )
+                                                        )
+                                                    }
+                                                  } else {
+                                                    _vm.$set(
+                                                      _vm.form,
+                                                      item.name,
+                                                      $$c
+                                                    )
+                                                  }
+                                                }
+                                              }
+                                            })
+                                          : item.type === "radio"
+                                          ? _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value: _vm.form[item.name],
+                                                  expression: "form[item.name]"
+                                                }
+                                              ],
+                                              staticClass: "form-check-input",
+                                              attrs: {
+                                                name: item.name,
+                                                id: item.id[$index],
+                                                value: "Female",
+                                                type: "radio"
+                                              },
+                                              domProps: {
+                                                checked: _vm._q(
+                                                  _vm.form[item.name],
+                                                  "Female"
+                                                )
+                                              },
+                                              on: {
+                                                change: function($event) {
+                                                  return _vm.$set(
+                                                    _vm.form,
+                                                    item.name,
+                                                    "Female"
+                                                  )
+                                                }
+                                              }
+                                            })
+                                          : _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value: _vm.form[item.name],
+                                                  expression: "form[item.name]"
+                                                }
+                                              ],
+                                              staticClass: "form-check-input",
+                                              attrs: {
+                                                name: item.name,
+                                                id: item.id[$index],
+                                                value: "Female",
+                                                type: item.type
+                                              },
+                                              domProps: {
+                                                value: _vm.form[item.name]
+                                              },
+                                              on: {
+                                                input: function($event) {
+                                                  if ($event.target.composing) {
+                                                    return
+                                                  }
+                                                  _vm.$set(
+                                                    _vm.form,
+                                                    item.name,
+                                                    $event.target.value
+                                                  )
+                                                }
+                                              }
+                                            }),
+                                        _vm._v(" "),
+                                        _c(
+                                          "label",
+                                          {
+                                            staticClass: "form-check-label",
+                                            attrs: { for: item.name }
+                                          },
+                                          [_vm._v("Female")]
+                                        )
+                                      ]
+                                    )
+                                  ])
+                                ])
+                              : _c(
+                                  "div",
+                                  [
+                                    _c("label", { attrs: { for: item.name } }, [
+                                      _vm._v(_vm._s(item.label))
+                                    ]),
+                                    _vm._v(" "),
+                                    item.type === "checkbox"
+                                      ? _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.form[item.name],
+                                              expression: "form[item.name]"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          class: {
+                                            "is-invalid": _vm.form.errors.has(
+                                              item.name
+                                            )
+                                          },
+                                          attrs: {
+                                            id: item.name,
+                                            name: item.name,
+                                            type: "checkbox"
+                                          },
+                                          domProps: {
+                                            checked: Array.isArray(
+                                              _vm.form[item.name]
+                                            )
+                                              ? _vm._i(
+                                                  _vm.form[item.name],
+                                                  null
+                                                ) > -1
+                                              : _vm.form[item.name]
+                                          },
+                                          on: {
+                                            change: function($event) {
+                                              var $$a = _vm.form[item.name],
+                                                $$el = $event.target,
+                                                $$c = $$el.checked
+                                                  ? true
+                                                  : false
+                                              if (Array.isArray($$a)) {
+                                                var $$v = null,
+                                                  $$i = _vm._i($$a, $$v)
+                                                if ($$el.checked) {
+                                                  $$i < 0 &&
+                                                    _vm.$set(
+                                                      _vm.form,
+                                                      item.name,
+                                                      $$a.concat([$$v])
+                                                    )
+                                                } else {
+                                                  $$i > -1 &&
+                                                    _vm.$set(
+                                                      _vm.form,
+                                                      item.name,
+                                                      $$a
+                                                        .slice(0, $$i)
+                                                        .concat(
+                                                          $$a.slice($$i + 1)
+                                                        )
+                                                    )
+                                                }
+                                              } else {
+                                                _vm.$set(
+                                                  _vm.form,
+                                                  item.name,
+                                                  $$c
+                                                )
+                                              }
+                                            }
+                                          }
+                                        })
+                                      : item.type === "radio"
+                                      ? _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.form[item.name],
+                                              expression: "form[item.name]"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          class: {
+                                            "is-invalid": _vm.form.errors.has(
+                                              item.name
+                                            )
+                                          },
+                                          attrs: {
+                                            id: item.name,
+                                            name: item.name,
+                                            type: "radio"
+                                          },
+                                          domProps: {
+                                            checked: _vm._q(
+                                              _vm.form[item.name],
+                                              null
+                                            )
+                                          },
+                                          on: {
+                                            change: function($event) {
+                                              return _vm.$set(
+                                                _vm.form,
+                                                item.name,
+                                                null
+                                              )
+                                            }
+                                          }
+                                        })
+                                      : _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.form[item.name],
+                                              expression: "form[item.name]"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          class: {
+                                            "is-invalid": _vm.form.errors.has(
+                                              item.name
+                                            )
+                                          },
+                                          attrs: {
+                                            id: item.name,
+                                            name: item.name,
+                                            type: item.type
+                                          },
+                                          domProps: {
+                                            value: _vm.form[item.name]
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.form,
+                                                item.name,
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        }),
+                                    _vm._v(" "),
+                                    _c("has-error", {
+                                      attrs: {
+                                        form: _vm.form,
+                                        field: item.name
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                          ]
+                        )
+                      }),
+                      0
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "col-6" },
+                      _vm._l(_vm.item_col_2, function(item, $index) {
+                        return _c("div", { key: $index }, [
+                          _c(
+                            "div",
+                            { staticClass: "form-group" },
+                            [
+                              _c("label", { attrs: { for: item.name } }, [
+                                _vm._v(_vm._s(item.label))
+                              ]),
+                              _vm._v(" "),
+                              item.type === "checkbox"
+                                ? _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form[item.name],
+                                        expression: "form[item.name]"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    class: {
+                                      "is-invalid": _vm.form.errors.has(
+                                        item.name
+                                      )
+                                    },
+                                    attrs: {
+                                      disabled:
+                                        _vm.editMode && item.name == "password",
+                                      id: item.name,
+                                      name: item.name,
+                                      type: "checkbox"
+                                    },
+                                    domProps: {
+                                      checked: Array.isArray(
+                                        _vm.form[item.name]
+                                      )
+                                        ? _vm._i(_vm.form[item.name], null) > -1
+                                        : _vm.form[item.name]
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        var $$a = _vm.form[item.name],
+                                          $$el = $event.target,
+                                          $$c = $$el.checked ? true : false
+                                        if (Array.isArray($$a)) {
+                                          var $$v = null,
+                                            $$i = _vm._i($$a, $$v)
+                                          if ($$el.checked) {
+                                            $$i < 0 &&
+                                              _vm.$set(
+                                                _vm.form,
+                                                item.name,
+                                                $$a.concat([$$v])
+                                              )
+                                          } else {
+                                            $$i > -1 &&
+                                              _vm.$set(
+                                                _vm.form,
+                                                item.name,
+                                                $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1))
+                                              )
+                                          }
+                                        } else {
+                                          _vm.$set(_vm.form, item.name, $$c)
+                                        }
+                                      }
+                                    }
+                                  })
+                                : item.type === "radio"
+                                ? _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form[item.name],
+                                        expression: "form[item.name]"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    class: {
+                                      "is-invalid": _vm.form.errors.has(
+                                        item.name
+                                      )
+                                    },
+                                    attrs: {
+                                      disabled:
+                                        _vm.editMode && item.name == "password",
+                                      id: item.name,
+                                      name: item.name,
+                                      type: "radio"
+                                    },
+                                    domProps: {
+                                      checked: _vm._q(_vm.form[item.name], null)
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        return _vm.$set(
+                                          _vm.form,
+                                          item.name,
+                                          null
+                                        )
+                                      }
+                                    }
+                                  })
+                                : _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form[item.name],
+                                        expression: "form[item.name]"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    class: {
+                                      "is-invalid": _vm.form.errors.has(
+                                        item.name
+                                      )
+                                    },
+                                    attrs: {
+                                      disabled:
+                                        _vm.editMode && item.name == "password",
+                                      id: item.name,
+                                      name: item.name,
+                                      type: item.type
+                                    },
+                                    domProps: { value: _vm.form[item.name] },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.form,
+                                          item.name,
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                              _vm._v(" "),
+                              _c("has-error", {
+                                attrs: { form: _vm.form, field: item.name }
+                              })
+                            ],
+                            1
+                          )
+                        ])
+                      }),
+                      0
+                    )
+                  ])
+                ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "modal-footer" }, [
                   _c(
@@ -45402,18 +46396,6 @@ var staticRenderFns = [
         )
       ]
     )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-body text-muted" }, [
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-6" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-6" })
-      ])
-    ])
   }
 ]
 render._withStripped = true
