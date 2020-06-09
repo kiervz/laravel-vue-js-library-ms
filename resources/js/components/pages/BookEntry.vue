@@ -8,9 +8,14 @@
                             <div class="d-flex align-items-center">
                                 <h3 class="card-title">Books</h3>
                             </div>
-                            <button class="btn btn-sm btn-primary show-book-modal" @click="addModal" data-title="ADD">
-                                Book Register <i class="fas fa-plus"></i>
-                            </button>
+                            <div class="float-right">
+                                <button class="btn btn-sm btn-primary show-book-modal" @click="addCategoryModal" data-title="ADD_CATEG">
+                                    Categories <i class="fas fa-tasks"></i>
+                                </button>
+                                <button class="btn btn-sm btn-primary show-book-modal" @click="addModal" data-title="ADD">
+                                    Book Register <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <!-- /.card-header -->
@@ -61,6 +66,7 @@
                 </div>
             </div>
         </div>
+
         <!-- Modal for updating book -->
         <div class="modal fade" id="add_book" role="dialog">
             <div class="modal-dialog modal-lg">
@@ -215,6 +221,64 @@
             </div>
         </div>
 
+        <!-- Modal for categories -->
+        <div class="modal fade" id="manage_category" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <form @submit.prevent="">
+                        <div class="modal-header bg-dark text-white">
+                            <h5 class="modal-title" id="exampleModalLabel">Manage Categories</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span class="text-white" aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card">
+                                <div class="card-header">
+                                    Book Categories
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Category</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="item in book_categories" :key="item.id">
+                                                <td>{{ item.id }}</td>
+                                                <td>{{ item.category }}</td>
+                                                <td>
+                                                    <i class="fas fa-edit" @click="editCategory(item)"></i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <input
+                                    required
+                                    type="text"
+                                    v-model="form['category']"
+                                    class="form-control"
+                                    id="category"
+                                    name="category"
+                                >
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Copies</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -224,7 +288,7 @@
         data() {
             return {
                 books: {},
-                book_categories: [],
+                book_categories: {},
                 // Create a new form instance
                 form: new Form({
                     id: '',
@@ -483,6 +547,12 @@
                                 });
                         }
                     })
+            },
+            addCategoryModal() {
+                $('#manage_category').modal('show');
+            },
+            editCategory(category) {
+
             }
         }
     }

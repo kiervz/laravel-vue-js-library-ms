@@ -2231,12 +2231,76 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "BookEntry",
   data: function data() {
     return {
       books: {},
-      book_categories: [],
+      book_categories: {},
       // Create a new form instance
       form: new Form({
         id: '',
@@ -2524,7 +2588,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           });
         }
       });
-    }
+    },
+    addCategoryModal: function addCategoryModal() {
+      $('#manage_category').modal('show');
+    },
+    editCategory: function editCategory(category) {}
   }
 });
 
@@ -44290,18 +44358,35 @@ var render = function() {
               [
                 _vm._m(0),
                 _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-sm btn-primary show-book-modal",
-                    attrs: { "data-title": "ADD" },
-                    on: { click: _vm.addModal }
-                  },
-                  [
-                    _vm._v("\n                            Book Register "),
-                    _c("i", { staticClass: "fas fa-plus" })
-                  ]
-                )
+                _c("div", { staticClass: "float-right" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-sm btn-primary show-book-modal",
+                      attrs: { "data-title": "ADD_CATEG" },
+                      on: { click: _vm.addCategoryModal }
+                    },
+                    [
+                      _vm._v("\n                                Categories "),
+                      _c("i", { staticClass: "fas fa-tasks" })
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-sm btn-primary show-book-modal",
+                      attrs: { "data-title": "ADD" },
+                      on: { click: _vm.addModal }
+                    },
+                    [
+                      _vm._v(
+                        "\n                                Book Register "
+                      ),
+                      _c("i", { staticClass: "fas fa-plus" })
+                    ]
+                  )
+                ])
               ]
             )
           ]),
@@ -45021,6 +45106,107 @@ var render = function() {
           ])
         ])
       ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: { id: "manage_category", role: "dialog" }
+      },
+      [
+        _c("div", { staticClass: "modal-dialog modal-md" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _c(
+              "form",
+              {
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                  }
+                }
+              },
+              [
+                _vm._m(9),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("div", { staticClass: "card" }, [
+                    _c("div", { staticClass: "card-header" }, [
+                      _vm._v(
+                        "\n                                Book Categories\n                            "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "card-body" }, [
+                      _c("table", { staticClass: "table table-bordered" }, [
+                        _vm._m(10),
+                        _vm._v(" "),
+                        _c(
+                          "tbody",
+                          _vm._l(_vm.book_categories, function(item) {
+                            return _c("tr", { key: item.id }, [
+                              _c("td", [_vm._v(_vm._s(item.id))]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(item.category))]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c("i", {
+                                  staticClass: "fas fa-edit",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.editCategory(item)
+                                    }
+                                  }
+                                })
+                              ])
+                            ])
+                          }),
+                          0
+                        )
+                      ])
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", { attrs: { for: "category" } }, [
+                      _vm._v("Category")
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form["category"],
+                          expression: "form['category']"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        required: "",
+                        type: "text",
+                        id: "category",
+                        name: "category"
+                      },
+                      domProps: { value: _vm.form["category"] },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.form, "category", $event.target.value)
+                        }
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _vm._m(11)
+              ]
+            )
+          ])
+        ])
+      ]
     )
   ])
 }
@@ -45150,6 +45336,72 @@ var staticRenderFns = [
     return _c("div", { staticClass: "col-md-5" }, [
       _c("label", { staticClass: "mr-4", attrs: { for: "total_copies" } }, [
         _vm._v("Total Copies: ")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-secondary",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Close")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+        [_vm._v("Add Copies")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header bg-dark text-white" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Manage Categories")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [
+          _c(
+            "span",
+            { staticClass: "text-white", attrs: { "aria-hidden": "true" } },
+            [_vm._v("×")]
+          )
+        ]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("ID")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Category")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Action")])
       ])
     ])
   },
