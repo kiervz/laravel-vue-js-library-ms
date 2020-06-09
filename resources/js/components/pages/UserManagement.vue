@@ -38,7 +38,7 @@
                                     <td>
                                         <i class="fas fa-edit" @click="editModal(item)"></i>
                                         |
-                                        <i class="fas fa-trash" @click="deleteBook(book.id)"></i>
+                                        <i class="fas fa-trash" @click="deleteUser(item.id)"></i>
                                     </td>
                                 </tr>
                             </tbody>
@@ -340,6 +340,34 @@
                                 });
                                 Fire.$emit('refreshUsers');
                                 $('#add_user').modal('hide');
+                            })
+                            .catch(err => {
+                                this.$Progress.fail();
+                                console.log(err);
+                            });
+                    }
+                })
+            },
+            deleteUser(id) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.value) {
+                        this.$Progress.start();
+                        this.form.delete('api/user/'+ id)
+                            .then(({ data }) => {
+                                this.$Progress.finish();
+                                toast.fire({
+                                    icon: data.status,
+                                    title: data.message
+                                });
+                                Fire.$emit('refreshUsers');
                             })
                             .catch(err => {
                                 this.$Progress.fail();

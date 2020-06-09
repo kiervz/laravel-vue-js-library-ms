@@ -3076,6 +3076,39 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           });
         }
       });
+    },
+    deleteUser: function deleteUser(id) {
+      var _this5 = this;
+
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(function (result) {
+        if (result.value) {
+          _this5.$Progress.start();
+
+          _this5.form["delete"]('api/user/' + id).then(function (_ref4) {
+            var data = _ref4.data;
+
+            _this5.$Progress.finish();
+
+            toast.fire({
+              icon: data.status,
+              title: data.message
+            });
+            Fire.$emit('refreshUsers');
+          })["catch"](function (err) {
+            _this5.$Progress.fail();
+
+            console.log(err);
+          });
+        }
+      });
     }
   }
 });
@@ -45466,7 +45499,7 @@ var render = function() {
                         staticClass: "fas fa-trash",
                         on: {
                           click: function($event) {
-                            return _vm.deleteBook(_vm.book.id)
+                            return _vm.deleteUser(item.id)
                           }
                         }
                       })
