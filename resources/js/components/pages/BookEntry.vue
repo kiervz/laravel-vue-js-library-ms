@@ -225,57 +225,70 @@
         <div class="modal fade" id="manage_category" role="dialog">
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
-                    <form @submit.prevent="">
-                        <div class="modal-header bg-dark text-white">
-                            <h5 class="modal-title" id="exampleModalLabel">Manage Categories</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span class="text-white" aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="card">
-                                <div class="card-header">
-                                    Book Categories
-                                </div>
-                                <div class="card-body">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Category</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="item in book_categories" :key="item.id">
-                                                <td>{{ item.id }}</td>
-                                                <td>{{ item.category }}</td>
-                                                <td>
-                                                    <i class="fas fa-edit" @click="editCategory(item)"></i>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                    <div class="modal-header bg-dark text-white">
+                        <h5 class="modal-title" id="exampleModalLabel">Manage Categories</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span class="text-white" aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card">
+                            <div class="card-header">
+                                Book Categories
                             </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Category</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item in book_categories" :key="item.id">
+                                            <td>{{ item.id }}</td>
+                                            <td>{{ item.category }}</td>
+                                            <td>
+                                                <i class="fas fa-edit" @click="editCategory(item.id)"></i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="category">Category</label>
-                                <input
-                                    required
-                                    type="text"
-                                    v-model="form['category']"
-                                    class="form-control"
-                                    id="category"
-                                    name="category"
-                                >
-                            </div>
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <input
+                                type="text"
+                                v-model="categoryData['category']"
+                                class="form-control"
+                                id="category"
+                                name="category"
+                            >
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add Copies</button>
-                        </div>
-                    </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" @click="clearCategory" class="btn btn-danger">Clear</button>
+                        <button
+                            v-show="!editModeCategory"
+                            @click="addCategory"
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            <i class="fas fa-save mr-1"></i>Save
+                        </button>
+                        <button
+                            v-show="editModeCategory"
+                            @click="updateCategory"
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            <i class="fas fa-pen mr-1"></i>Update
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -289,6 +302,10 @@
             return {
                 books: {},
                 book_categories: {},
+                categoryData: {
+                    id: '',
+                    category: ''
+                },
                 // Create a new form instance
                 form: new Form({
                     id: '',
@@ -377,7 +394,8 @@
                     },
                 ],
                 limit: 2,
-                editMode: true
+                editMode: true,
+                editModeCategory: false
             }
         },
         created() {
@@ -469,7 +487,10 @@
                             this.form.put('api/book/' + this.form.id)
                                 .then(({ data }) => {
                                     this.$Progress.finish();
-                                    Swal.fire('Updated!', 'New copies has been added!', 'success');
+                                    toast.fire({
+                                        icon: data.status,
+                                        title: data.message,
+                                    });
                                     this.form.reset();
                                     Fire.$emit('refreshBooks');
                                     $('#update_copies').modal('hide');
@@ -477,7 +498,10 @@
                                 .catch(err => {
                                     this.$Progress.fail();
                                     console.log(err);
-                                    Swal.fire('Failed!', 'There was something wrong.', 'warning');
+                                    toast.fire({
+                                        icon: 'error',
+                                        title: 'Something went wrong. Please, try again later.',
+                                    });
                                 });
                         }
                     })
@@ -551,8 +575,65 @@
             addCategoryModal() {
                 $('#manage_category').modal('show');
             },
-            editCategory(category) {
+            clearCategory() {
+                this.editModeCategory = false;
+                this.text = "";
+                var self = this;
 
+                Object.keys(this.categoryData).forEach(function(key, index) {
+                    self.categoryData[key] = '';
+                });
+            },
+            editCategory(id) {
+                axios.get('api/book_category/'+id)
+                    .then(({ data }) => {
+                        this.editModeCategory = true;
+                        this.categoryData = data.data
+                    })
+                    .catch(err => console.log(err));
+            },
+            async updateCategory() {
+                this.$Progress.start();
+                await axios.put('api/book_category/' + this.categoryData.id, this.categoryData)
+                    .then(({ data }) => {
+                        this.$Progress.finish();
+                        Fire.$emit('refreshBooks');
+                        this.categoryData = {};
+                        this.editModeCategory = false;
+                        toast.fire({
+                            icon: data.status,
+                            title: data.message,
+                        });
+                    })
+                    .catch(err => {
+                        this.$Progress.fail();
+                        console.log(err);
+                        toast.fire({
+                            icon: 'error',
+                            title: 'Something went wrong. Please, try again later.',
+                        });
+                    });
+            },
+            async addCategory() {
+                this.$Progress.start()
+                await axios.post('api/book_category', this.categoryData)
+                            .then(({ data }) => {
+                                this.$Progress.finish();
+                                Fire.$emit('refreshBooks');
+                                this.categoryData = {};
+
+                                toast.fire({
+                                    icon: data.status,
+                                    title: data.message
+                                });
+                            })
+                            .catch(err => {
+                                console.log(err);
+                                toast.fire({
+                                    icon: 'error',
+                                    title: 'Something went wrong. Please, try again later.',
+                                });
+                            });
             }
         }
     }
