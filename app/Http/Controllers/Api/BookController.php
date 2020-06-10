@@ -55,20 +55,32 @@ class BookController extends Controller
 
     public function update(BookRequest $request, $id)
     {
-        $number_copies = $request->input('number_copies');
         $book = Book::findOrFail($id);
-
-        if ($number_copies > 0) {
-            $book->total_copies += $number_copies;
-            $book->avail_copies += $number_copies;
-            $book->save();
-        } else {
-            $book->update($request->all());
-        }
+        $book->update($request->all());
 
         return response()->json([
             'status' => 'success',
             'message' => 'Book successfully updated!',
+            'data' => $book
+        ], Response::HTTP_OK);
+    }
+
+    public function update_copies(request $request, $id)
+    {
+        $number_copies = $request->input('number_copies');
+        $book = Book::findOrFail($id);
+
+        $request->validate([
+            'number_copies' => 'numeric|required',
+        ]);
+
+        $book->total_copies += $number_copies;
+        $book->avail_copies += $number_copies;
+        $book->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Book copies successfully updated!',
             'data' => $book
         ], Response::HTTP_OK);
     }

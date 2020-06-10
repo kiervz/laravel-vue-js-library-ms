@@ -9,6 +9,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BookCategoryController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     public function index()
     {
 

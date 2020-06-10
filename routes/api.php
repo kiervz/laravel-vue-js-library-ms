@@ -22,4 +22,5 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::apiResource('book', 'Api\BookController');
     Route::apiResource('user', 'Api\UserController');
     Route::apiResource('book_category', 'Api\BookCategoryController');
+    Route::put('book_copies/{id}', 'Api\BookController@update_copies');
 });

@@ -2314,6 +2314,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "BookEntry",
   data: function data() {
@@ -2524,7 +2529,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         if (result.value) {
           _this4.$Progress.start();
 
-          _this4.form.put('api/book/' + _this4.form.id).then(function (_ref3) {
+          _this4.form.put('api/book_copies/' + _this4.form.id).then(function (_ref3) {
             var data = _ref3.data;
 
             _this4.$Progress.finish();
@@ -2541,7 +2546,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           })["catch"](function (err) {
             _this4.$Progress.fail();
 
-            console.log(err);
+            _this4.errors = err.response.data.errors;
             toast.fire({
               icon: 'error',
               title: 'Something went wrong. Please, try again later.'
@@ -45203,42 +45208,62 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "form-group" }, [
-                    _c("label", { attrs: { for: "number_copies" } }, [
-                      _vm._v("Number of Copies")
-                    ]),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.form["number_copies"],
-                          expression: "form['number_copies']"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      attrs: {
-                        required: "",
-                        type: "number",
-                        id: "number_copies",
-                        name: "number_copies"
-                      },
-                      domProps: { value: _vm.form["number_copies"] },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
+                  _c(
+                    "div",
+                    { staticClass: "form-group" },
+                    [
+                      _c("label", { attrs: { for: "number_copies" } }, [
+                        _vm._v("Number of Copies")
+                      ]),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.form["number_copies"],
+                            expression: "form['number_copies']"
                           }
-                          _vm.$set(
-                            _vm.form,
-                            "number_copies",
-                            $event.target.value
-                          )
+                        ],
+                        staticClass: "form-control",
+                        class: _vm.errors["number_copies"] ? "is-invalid" : "",
+                        attrs: {
+                          type: "number",
+                          id: "number_copies",
+                          name: "number_copies"
+                        },
+                        domProps: { value: _vm.form["number_copies"] },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.form,
+                              "number_copies",
+                              $event.target.value
+                            )
+                          }
                         }
-                      }
-                    })
-                  ])
+                      }),
+                      _vm._v(" "),
+                      _vm._l(_vm.errors["number_copies"], function(item, i) {
+                        return _c("div", { key: i }, [
+                          _c(
+                            "span",
+                            {
+                              class: _vm.errors["number_copies"]
+                                ? "invalid-feedback d-block"
+                                : "",
+                              attrs: { role: "alert" }
+                            },
+                            [_c("strong", [_vm._v(_vm._s(item))])]
+                          )
+                        ])
+                      })
+                    ],
+                    2
+                  )
                 ]),
                 _vm._v(" "),
                 _vm._m(8)

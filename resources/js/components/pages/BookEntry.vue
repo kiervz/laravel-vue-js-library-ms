@@ -203,13 +203,18 @@
                             <div class="form-group">
                                 <label for="number_copies">Number of Copies</label>
                                 <input
-                                    required
                                     type="number"
                                     v-model="form['number_copies']"
                                     class="form-control"
                                     id="number_copies"
                                     name="number_copies"
+                                    :class="errors['number_copies'] ? 'is-invalid' : ''"
                                 >
+                                <div v-for="(item, i) in errors['number_copies']" :key="i">
+                                    <span role="alert" :class="errors['number_copies'] ? 'invalid-feedback d-block' : ''">
+                                        <strong>{{ item }}</strong>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -499,7 +504,7 @@
                     }).then((result) => {
                         if (result.value) {
                             this.$Progress.start();
-                            this.form.put('api/book/' + this.form.id)
+                            this.form.put('api/book_copies/' + this.form.id)
                                 .then(({ data }) => {
                                     this.$Progress.finish();
                                     toast.fire({
@@ -512,7 +517,7 @@
                                 })
                                 .catch(err => {
                                     this.$Progress.fail();
-                                    console.log(err);
+                                    this.errors = err.response.data.errors;
                                     toast.fire({
                                         icon: 'error',
                                         title: 'Something went wrong. Please, try again later.',
