@@ -282,6 +282,7 @@
                         });
                 },
             addModal() {
+                this.editMode = true;
                 $('#add_user').modal('show');
             },
             addUser() {

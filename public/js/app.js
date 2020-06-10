@@ -2308,6 +2308,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "BookEntry",
   data: function data() {
@@ -2394,7 +2400,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }],
       limit: 2,
       editMode: true,
-      editModeCategory: false
+      editModeCategory: false,
+      errors: []
     };
   },
   created: function created() {
@@ -2403,6 +2410,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     this.loadBooks();
     Fire.$on('refreshBooks', function () {
       _this.loadBooks();
+    });
+    Fire.$on('clearFieldsCategory', function () {
+      _this.text = "";
+      var self = _this;
+      Object.keys(_this.categoryData).forEach(function (key, index) {
+        self.categoryData[key] = '';
+      });
     });
   },
   methods: {
@@ -2611,15 +2625,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       });
     },
     addCategoryModal: function addCategoryModal() {
+      this.errors = [];
+      this.editModeCategory = false;
+      Fire.$emit('clearFieldsCategory');
       $('#manage_category').modal('show');
     },
     clearCategory: function clearCategory() {
       this.editModeCategory = false;
-      this.text = "";
-      var self = this;
-      Object.keys(this.categoryData).forEach(function (key, index) {
-        self.categoryData[key] = '';
-      });
+      Fire.$emit('clearFieldsCategory');
     },
     editCategory: function editCategory(id) {
       var _this7 = this;
@@ -2658,7 +2671,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 })["catch"](function (err) {
                   _this8.$Progress.fail();
 
-                  console.log(err);
+                  _this8.errors = err.response.data.errors;
                   toast.fire({
                     icon: 'error',
                     title: 'Something went wrong. Please, try again later.'
@@ -2696,7 +2709,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     title: data.message
                   });
                 })["catch"](function (err) {
-                  console.log(err);
+                  _this9.$Progress.fail();
+
+                  _this9.errors = err.response.data.errors;
                   toast.fire({
                     icon: 'error',
                     title: 'Something went wrong. Please, try again later.'
@@ -3187,6 +3202,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     addModal: function addModal() {
+      this.editMode = true;
       $('#add_user').modal('show');
     },
     addUser: function addUser() {
@@ -45251,66 +45267,91 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "card-body" }, [
-                  _c("table", { staticClass: "table table-bordered" }, [
-                    _vm._m(10),
-                    _vm._v(" "),
-                    _c(
-                      "tbody",
-                      _vm._l(_vm.book_categories, function(item) {
-                        return _c("tr", { key: item.id }, [
-                          _c("td", [_vm._v(_vm._s(item.id))]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v(_vm._s(item.category))]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _c("i", {
-                              staticClass: "fas fa-edit",
-                              on: {
-                                click: function($event) {
-                                  return _vm.editCategory(item.id)
+                  _c(
+                    "table",
+                    { staticClass: "table table-bordered table-sm" },
+                    [
+                      _vm._m(10),
+                      _vm._v(" "),
+                      _c(
+                        "tbody",
+                        _vm._l(_vm.book_categories, function(item) {
+                          return _c("tr", { key: item.id }, [
+                            _c("td", [_vm._v(_vm._s(item.id))]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(item.category))]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c("i", {
+                                staticClass: "fas fa-edit",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.editCategory(item.id)
+                                  }
                                 }
-                              }
-                            })
+                              })
+                            ])
                           ])
-                        ])
-                      }),
-                      0
-                    )
-                  ])
+                        }),
+                        0
+                      )
+                    ]
+                  )
                 ])
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "form-group" }, [
-                _c("label", { attrs: { for: "category" } }, [
-                  _vm._v("Category")
-                ]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.categoryData["category"],
-                      expression: "categoryData['category']"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text", id: "category", name: "category" },
-                  domProps: { value: _vm.categoryData["category"] },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+              _c(
+                "div",
+                { staticClass: "form-group" },
+                [
+                  _c("label", { attrs: { for: "category" } }, [
+                    _vm._v("Category")
+                  ]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.categoryData["category"],
+                        expression: "categoryData['category']"
                       }
-                      _vm.$set(
-                        _vm.categoryData,
-                        "category",
-                        $event.target.value
-                      )
+                    ],
+                    staticClass: "form-control",
+                    class: _vm.errors["category"] ? "is-invalid" : "",
+                    attrs: { type: "text", id: "category", name: "category" },
+                    domProps: { value: _vm.categoryData["category"] },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(
+                          _vm.categoryData,
+                          "category",
+                          $event.target.value
+                        )
+                      }
                     }
-                  }
-                })
-              ])
+                  }),
+                  _vm._v(" "),
+                  _vm._l(_vm.errors["category"], function(item, i) {
+                    return _c("div", { key: i }, [
+                      _c(
+                        "span",
+                        {
+                          class: _vm.errors["category"]
+                            ? "invalid-feedback d-block"
+                            : "",
+                          attrs: { role: "alert" }
+                        },
+                        [_c("strong", [_vm._v(_vm._s(item))])]
+                      )
+                    ])
+                  })
+                ],
+                2
+              )
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "modal-footer" }, [

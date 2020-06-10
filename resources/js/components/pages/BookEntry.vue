@@ -237,7 +237,7 @@
                                 Book Categories
                             </div>
                             <div class="card-body">
-                                <table class="table table-bordered">
+                                <table class="table table-bordered table-sm">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -263,10 +263,16 @@
                             <input
                                 type="text"
                                 v-model="categoryData['category']"
-                                class="form-control"
                                 id="category"
                                 name="category"
+                                class="form-control"
+                                :class="errors['category'] ? 'is-invalid' : ''"
                             >
+                            <div v-for="(item, i) in errors['category']" :key="i">
+                                <span role="alert" :class="errors['category'] ? 'invalid-feedback d-block' : ''">
+                                    <strong>{{ item }}</strong>
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -395,14 +401,23 @@
                 ],
                 limit: 2,
                 editMode: true,
-                editModeCategory: false
+                editModeCategory: false,
+                errors: []
             }
         },
         created() {
             this.loadBooks();
             Fire.$on('refreshBooks', () => {
                 this.loadBooks();
-            })
+            });
+            Fire.$on('clearFieldsCategory', () => {
+                this.text = "";
+                var self = this;
+
+                Object.keys(this.categoryData).forEach(function(key, index) {
+                    self.categoryData[key] = '';
+                });
+            });
         },
         methods: {
             async loadBooks() {
@@ -572,16 +587,14 @@
                     })
             },
             addCategoryModal() {
+                this.errors = [];
+                this.editModeCategory = false;
+                Fire.$emit('clearFieldsCategory');
                 $('#manage_category').modal('show');
             },
             clearCategory() {
                 this.editModeCategory = false;
-                this.text = "";
-                var self = this;
-
-                Object.keys(this.categoryData).forEach(function(key, index) {
-                    self.categoryData[key] = '';
-                });
+                Fire.$emit('clearFieldsCategory');
             },
             editCategory(id) {
                 axios.get('api/book_category/'+id)
@@ -606,7 +619,7 @@
                     })
                     .catch(err => {
                         this.$Progress.fail();
-                        console.log(err);
+                        this.errors = err.response.data.errors;
                         toast.fire({
                             icon: 'error',
                             title: 'Something went wrong. Please, try again later.',
@@ -626,7 +639,8 @@
                                 });
                             })
                             .catch(err => {
-                                console.log(err);
+                                this.$Progress.fail();
+                                this.errors = err.response.data.errors;
                                 toast.fire({
                                     icon: 'error',
                                     title: 'Something went wrong. Please, try again later.',
