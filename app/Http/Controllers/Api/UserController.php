@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
@@ -37,7 +39,18 @@ class UserController extends Controller
         $code = Response::HTTP_CONFLICT;
         $data = $request->all();
 
-        $user = User::create($request->all());
+        $user = User::create([
+            'firstname' => $request['firstname'],
+            'middlename' => $request['middlename'],
+            'lastname' => $request['lastname'],
+            'user_type_id' => $request['user_type_id'],
+            'contact_no' => $request['contact_no'],
+            'username' => $request['username'],
+            'gender' => $request['gender'],
+            'birthday' => $request['birthday'],
+            'email' => $request['email'],
+            'password' => Hash::make($request['password']),
+        ]);
 
         if ($user) {
             $status = "success";
@@ -77,12 +90,23 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        $status = "error";
+        $message = "User failed to delete.";
+        $code = Response::HTTP_CONFLICT;
 
+        if ($id == Auth::user()->id) {
+            $message = "Can't to delete your account.";
+        } elseif ($id == "1") {
+            $message = "Can't delete administrator account.";
+        } else {
+            $user = User::findOrFail($id);
+            $user->delete();
+            $status = "success";
+            $message = "User successfully deleted!";
+        }
         return response()->json([
-            'status' => 'success',
-            'message' => 'User successfully deleted!',
+            'status' => $status,
+            'message' => $message,
         ], Response::HTTP_OK);
     }
 }

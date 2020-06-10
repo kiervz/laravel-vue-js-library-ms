@@ -65,7 +65,7 @@ class BookCategoryController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'category' => 'string|required|unique:book_categories|max:50',
+            'category' => 'string|required|max:50|unique:book_categories,category,' .$request->id,
         ]);
 
         $status = "error";

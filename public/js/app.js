@@ -2419,9 +2419,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context.next = 3;
                 return axios.get('api/book').then(function (_ref) {
                   var data = _ref.data;
-
-                  _this2.$Progress.finish();
-
                   _this2.books = data.data.books;
                   _this2.book_categories = data.data.book_categories;
 
@@ -3212,6 +3209,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
             _this3.$Progress.finish();
 
+            Fire.$emit('refreshUsers');
             toast.fire({
               icon: data.status,
               title: data.message
@@ -3252,11 +3250,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
             _this4.$Progress.finish();
 
+            Fire.$emit('refreshUsers');
             toast.fire({
               icon: data.status,
               title: data.message
             });
-            Fire.$emit('refreshUsers');
             $('#add_user').modal('hide');
           })["catch"](function (err) {
             _this4.$Progress.fail();
@@ -3286,14 +3284,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
             _this5.$Progress.finish();
 
+            Fire.$emit('refreshUsers');
             toast.fire({
               icon: data.status,
               title: data.message
             });
-            Fire.$emit('refreshUsers');
           })["catch"](function (err) {
             _this5.$Progress.fail();
 
+            toast.fire({
+              icon: err.status,
+              title: err.message
+            });
             console.log(err);
           });
         }

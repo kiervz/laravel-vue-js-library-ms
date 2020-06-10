@@ -299,6 +299,7 @@
                         this.form.post('api/user', this.form)
                             .then(({ data }) => {
                                 this.$Progress.finish();
+                                Fire.$emit('refreshUsers');
                                 toast.fire({
                                     icon: data.status,
                                     title: data.message
@@ -334,11 +335,11 @@
                         this.form.put('api/user/'+ this.form.id)
                             .then(({ data }) => {
                                 this.$Progress.finish();
+                                Fire.$emit('refreshUsers');
                                 toast.fire({
                                     icon: data.status,
                                     title: data.message
                                 });
-                                Fire.$emit('refreshUsers');
                                 $('#add_user').modal('hide');
                             })
                             .catch(err => {
@@ -363,14 +364,18 @@
                         this.form.delete('api/user/'+ id)
                             .then(({ data }) => {
                                 this.$Progress.finish();
+                                Fire.$emit('refreshUsers');
                                 toast.fire({
                                     icon: data.status,
                                     title: data.message
                                 });
-                                Fire.$emit('refreshUsers');
                             })
                             .catch(err => {
                                 this.$Progress.fail();
+                                toast.fire({
+                                    icon: err.status,
+                                    title: err.message
+                                });
                                 console.log(err);
                             });
                     }

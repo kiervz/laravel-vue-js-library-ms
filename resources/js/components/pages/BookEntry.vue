@@ -409,7 +409,6 @@
                 this.$Progress.start();
                 await axios.get('api/book')
                         .then(({ data }) => {
-                            this.$Progress.finish();
                             this.books = data.data.books;
                             this.book_categories = data.data.book_categories;
                             this.$Progress.finish();
@@ -621,7 +620,6 @@
                                 this.$Progress.finish();
                                 Fire.$emit('refreshBooks');
                                 this.categoryData = {};
-
                                 toast.fire({
                                     icon: data.status,
                                     title: data.message
