@@ -32,7 +32,7 @@ class BookRequest extends FormRequest
             'publisher' => 'required|string|max:150',
             'description' => 'required|string|max:255',
             'category_id' => 'required|integer',
-            'date_published' => 'required',
+            'year_published' => 'required|string|min:4|max:4',
             'series' => 'required|string|min:3|max:15',
             'price' => 'required|numeric',
             'total_copies' => 'required|numeric'

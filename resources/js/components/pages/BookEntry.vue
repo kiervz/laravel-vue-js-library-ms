@@ -44,10 +44,10 @@
                                     <td>{{ book.author }}</td>
                                     <td>{{ book.publisher }}</td>
                                     <td>{{ book.category.category }}</td>
-                                    <td>{{ book.date_published }}</td>
+                                    <td>{{ book.year_published }}</td>
                                     <td>{{ book.total_copies }}</td>
                                     <td>
-                                        <i class="fas fa-plus" @click="updateCopiesModal(book)"></i>
+                                        <i class="fas fa-folder-plus" @click="updateCopiesModal(book)"></i>
                                         |
                                         <i class="fas fa-edit" @click="editModal(book)"></i>
                                         |
@@ -322,7 +322,7 @@
                     publisher: '',
                     description: '',
                     category_id: '',
-                    date_published: '',
+                    year_published: '',
                     series: '',
                     price: '',
                     avail_copies: '',
@@ -376,9 +376,9 @@
                     },
                     {
                         label: "Date Published",
-                        name: "date_published",
+                        name: "year_published",
                         required: "required",
-                        type: "date"
+                        type: "number"
                     },
                     {
                         label: "Series",
@@ -411,6 +411,7 @@
                 this.loadBooks();
             });
             Fire.$on('clearFieldsCategory', () => {
+                this.errors = [];
                 this.text = "";
                 var self = this;
 
@@ -609,9 +610,10 @@
                 await axios.put('api/book_category/' + this.categoryData.id, this.categoryData)
                     .then(({ data }) => {
                         this.$Progress.finish();
-                        Fire.$emit('refreshBooks');
                         this.categoryData = {};
                         this.editModeCategory = false;
+                        Fire.$emit('refreshBooks');
+                        Fire.$emit('clearFieldsCategory');
                         toast.fire({
                             icon: data.status,
                             title: data.message,

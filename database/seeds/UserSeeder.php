@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             'email' => 'kierveymaghanoy24@gmail.com',
             'password' => '$2y$10$iA7.jLQZWtfgj1.kebQncujzdQ0cb9cOiDqpAdWDOSd27ikN2t57q',
             'status' => '1',
-            'user_image' => 'profile.png',
+            'user_image' => 'profile.jpg',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);

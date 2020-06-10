@@ -2334,7 +2334,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         publisher: '',
         description: '',
         category_id: '',
-        date_published: '',
+        year_published: '',
         series: '',
         price: '',
         avail_copies: '',
@@ -2379,9 +2379,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         type: "dropdown"
       }, {
         label: "Date Published",
-        name: "date_published",
+        name: "year_published",
         required: "required",
-        type: "date"
+        type: "number"
       }, {
         label: "Series",
         name: "series",
@@ -2412,6 +2412,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       _this.loadBooks();
     });
     Fire.$on('clearFieldsCategory', function () {
+      _this.errors = [];
       _this.text = "";
       var self = _this;
       Object.keys(_this.categoryData).forEach(function (key, index) {
@@ -2661,9 +2662,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                   _this8.$Progress.finish();
 
-                  Fire.$emit('refreshBooks');
                   _this8.categoryData = {};
                   _this8.editModeCategory = false;
+                  Fire.$emit('refreshBooks');
+                  Fire.$emit('clearFieldsCategory');
                   toast.fire({
                     icon: data.status,
                     title: data.message
@@ -3202,7 +3204,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     addModal: function addModal() {
-      this.editMode = true;
+      this.editMode = false;
       $('#add_user').modal('show');
     },
     addUser: function addUser() {
@@ -44552,13 +44554,13 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(book.category.category))]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(book.date_published))]),
+                    _c("td", [_vm._v(_vm._s(book.year_published))]),
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(book.total_copies))]),
                     _vm._v(" "),
                     _c("td", [
                       _c("i", {
-                        staticClass: "fas fa-plus",
+                        staticClass: "fas fa-folder-plus",
                         on: {
                           click: function($event) {
                             return _vm.updateCopiesModal(book)
