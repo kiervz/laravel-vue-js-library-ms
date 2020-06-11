@@ -15,7 +15,7 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <table class="table table-bordered">
+                        <table class="table table-sm table-hover table-bordered">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -75,41 +75,48 @@
                                 <div class="col-6">
                                     <div v-for="(item, $index) in item_col_1" :key="$index" class="form-group">
                                         <div v-if="item.type == 'dropdown'">
-                                            <label :for="item.name">{{ item.label }}</label>
-                                            <select
-                                                :name="item.name"
-                                                :id="item.name"
-                                                v-model="form[item.name]"
-                                                class="form-control"
-                                                :class="{ 'is-invalid': form.errors.has(item.name) }"
-                                            >
-                                                <option value="" disabled selected>Select User Type</option>
-                                                <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
-                                            </select>
-                                            <has-error :form="form" :field="item.name"></has-error>
+                                            <div class="form-group">
+                                                <label :for="item.name">{{ item.label }}</label>
+                                                <select
+                                                    :name="item.name"
+                                                    :id="item.name"
+                                                    v-model="form[item.name]"
+                                                    class="form-control"
+                                                    :class="{ 'is-invalid': form.errors.has(item.name) }"
+                                                >
+                                                    <option value="" disabled selected>Select User Type</option>
+                                                    <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
+                                                </select>
+                                                <has-error :form="form" :field="item.name"></has-error>
+                                            </div>
                                         </div>
                                         <div v-else-if="item.type == 'radio'">
-                                            <label :for="item.name">{{ item.label }}</label>
                                             <div class="form-group">
-                                                <div class="form-check form-check-inline">
-                                                    <input
-                                                        class="form-check-input"
-                                                        :type="item.type"
-                                                        :name="item.name"
-                                                        :id="item.id[$index]"
-                                                        v-model="form[item.name]"
-                                                        value="Male">
-                                                    <label class="form-check-label" :for="item.name">Male</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input
-                                                        class="form-check-input"
-                                                        :type="item.type"
-                                                        :name="item.name"
-                                                        :id="item.id[$index]"
-                                                        v-model="form[item.name]"
-                                                        value="Female">
-                                                    <label class="form-check-label" :for="item.name">Female</label>
+                                                <label :for="item.name">{{ item.label }}</label>
+                                                <div class="form-group d-flex">
+                                                    <div class="custom-control custom-radio">
+                                                        <input
+                                                            class="custom-control-input"
+                                                            :type="item.type"
+                                                            :name="item.name"
+                                                            id="Male"
+                                                            v-model="form[item.name]"
+                                                            value="Male"
+                                                            checked
+                                                        >
+                                                        <label for="Male" class="custom-control-label mr-3">Male</label>
+                                                    </div>
+                                                    <div class="custom-control custom-radio">
+                                                        <input
+                                                            class="custom-control-input"
+                                                            :type="item.type"
+                                                            :name="item.name"
+                                                            id="Female"
+                                                            v-model="form[item.name]"
+                                                            value="Female"
+                                                        >
+                                                        <label for="Female" class="custom-control-label">Female</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -129,20 +136,18 @@
                                 </div>
                                 <!-- second row -->
                                 <div class="col-6">
-                                    <div v-for="(item, $index) in item_col_2" :key="$index">
-                                        <div class="form-group">
-                                            <label :for="item.name">{{ item.label }}</label>
-                                            <input
-                                                :disabled="editMode && item.name == 'password'"
-                                                :id="item.name"
-                                                :name="item.name"
-                                                :type="item.type"
-                                                v-model="form[item.name]"
-                                                class="form-control"
-                                                :class="{ 'is-invalid': form.errors.has(item.name) }"
-                                            >
-                                            <has-error :form="form" :field="item.name"></has-error>
-                                        </div>
+                                    <div v-for="(item, $index) in item_col_2" :key="$index" class="form-group">
+                                        <label :for="item.name">{{ item.label }}</label>
+                                        <input
+                                            :disabled="editMode && item.name == 'password'"
+                                            :id="item.name"
+                                            :name="item.name"
+                                            :type="item.type"
+                                            v-model="form[item.name]"
+                                            class="form-control"
+                                            :class="{ 'is-invalid': form.errors.has(item.name) }"
+                                        >
+                                        <has-error :form="form" :field="item.name"></has-error>
                                     </div>
                                 </div>
                             </div>
