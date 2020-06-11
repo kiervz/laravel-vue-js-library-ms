@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -19,11 +20,16 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::all();
+        $users = User::where('status', '1')->with('roles')->get();
+        $roles = Role::all();
+
         return response()->json([
             "status" => true,
             "message" => "success",
-            "data" => $users
+            "data" => [
+                'users' => $users,
+                'roles' => $roles
+            ]
         ], response::HTTP_OK);
     }
 
@@ -52,6 +58,8 @@ class UserController extends Controller
             'password' => Hash::make($request['password']),
         ]);
 
+        $user->roles()->attach($request['user_type_id']);
+
         if ($user) {
             $status = "success";
             $message = "User successfully created";
@@ -79,6 +87,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
+        $user->roles()->sync($request['user_type_id']);
         $user->update($request->all());
 
         return response()->json([
@@ -100,7 +109,8 @@ class UserController extends Controller
             $message = "Can't delete administrator account.";
         } else {
             $user = User::findOrFail($id);
-            $user->delete();
+            $user->status = '0';
+            $user->save();
             $status = "success";
             $message = "User successfully deleted!";
         }

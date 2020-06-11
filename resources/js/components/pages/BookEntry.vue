@@ -472,7 +472,7 @@
                                 this.errors = err.response.data.errors;
                                 toast.fire({
                                     icon: 'warning',
-                                    title: 'There was something wrong.'
+                                    title: 'Something went wrong. Please, try again later.',
                                 });
                             })
                     }
@@ -519,7 +519,7 @@
                                     this.$Progress.fail();
                                     this.errors = err.response.data.errors;
                                     toast.fire({
-                                        icon: 'error',
+                                        icon: 'warning',
                                         title: 'Something went wrong. Please, try again later.',
                                     });
                                 });
@@ -554,7 +554,7 @@
                                     console.log(err);
                                     toast.fire({
                                         icon: 'warning',
-                                        title: 'There was something wrong.'
+                                        title: 'Something went wrong. Please, try again later.',
                                     });
                                 });
                         }
@@ -653,7 +653,7 @@
                                     title: 'Something went wrong. Please, try again later.',
                                 });
                             });
-            }
+            },
         }
     }
 </script>

@@ -2495,7 +2495,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             _this3.errors = err.response.data.errors;
             toast.fire({
               icon: 'warning',
-              title: 'There was something wrong.'
+              title: 'Something went wrong. Please, try again later.'
             });
           });
         }
@@ -2548,7 +2548,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
             _this4.errors = err.response.data.errors;
             toast.fire({
-              icon: 'error',
+              icon: 'warning',
               title: 'Something went wrong. Please, try again later.'
             });
           });
@@ -2587,7 +2587,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             console.log(err);
             toast.fire({
               icon: 'warning',
-              title: 'There was something wrong.'
+              title: 'Something went wrong. Please, try again later.'
             });
           });
         }
@@ -3087,13 +3087,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "UserManagement",
   data: function data() {
     return {
       users: {},
+      roles: {},
       form: new Form({
         id: '',
         firstname: '',
@@ -3173,6 +3172,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
     this.loadUsers();
     Fire.$on('refreshUsers', function () {
+      _this.form.reset();
+
+      _this.form.clear();
+
       _this.loadUsers();
     });
   },
@@ -3193,7 +3196,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                   _this2.$Progress.finish();
 
-                  _this2.users = data.data;
+                  _this2.users = data.data.users;
+                  _this2.roles = data.data.roles;
                 })["catch"](function (err) {
                   _this2.$Progress.fail();
 
@@ -3246,12 +3250,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
       });
     },
-    editModal: function editModal(book) {
+    editModal: function editModal(user) {
       this.form.reset();
       this.form.clear();
       this.editMode = true;
       $('#add_user').modal('show');
-      this.form.fill(book);
+      this.form.fill(user);
     },
     updateUser: function updateUser() {
       var _this4 = this;
@@ -45941,7 +45945,7 @@ var render = function() {
                   return _c("tr", { key: item.id }, [
                     _c("td", [_vm._v(_vm._s(item.id))]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(item.user_type_id))]),
+                    _c("td", [_vm._v(_vm._s(item.roles[0].name))]),
                     _vm._v(" "),
                     _c("td", [
                       _vm._v(_vm._s(item.firstname + " " + item.lastname))
@@ -46117,24 +46121,18 @@ var render = function() {
                                           [_vm._v("Select User Type")]
                                         ),
                                         _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          { attrs: { value: "1" } },
-                                          [_vm._v("Administrator")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          { attrs: { value: "2" } },
-                                          [_vm._v("Librarian")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          { attrs: { value: "3" } },
-                                          [_vm._v("Student Assistant")]
-                                        )
-                                      ]
+                                        _vm._l(_vm.roles, function(role) {
+                                          return _c(
+                                            "option",
+                                            {
+                                              key: role.id,
+                                              domProps: { value: role.id }
+                                            },
+                                            [_vm._v(_vm._s(role.name))]
+                                          )
+                                        })
+                                      ],
+                                      2
                                     ),
                                     _vm._v(" "),
                                     _c("has-error", {

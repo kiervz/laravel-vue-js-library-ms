@@ -30,7 +30,7 @@
                             <tbody>
                                 <tr v-for="item in users" :key="item.id">
                                     <td>{{ item.id }}</td>
-                                    <td>{{ item.user_type_id }}</td>
+                                    <td>{{ item.roles[0].name }}</td>
                                     <td>{{ item.firstname + ' ' + item.lastname }}</td>
                                     <td>{{ item.gender }}</td>
                                     <td>{{ item.username }}</td>
@@ -84,9 +84,7 @@
                                                 :class="{ 'is-invalid': form.errors.has(item.name) }"
                                             >
                                                 <option value="" disabled selected>Select User Type</option>
-                                                <option value="1">Administrator</option>
-                                                <option value="2">Librarian</option>
-                                                <option value="3">Student Assistant</option>
+                                                <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
                                             </select>
                                             <has-error :form="form" :field="item.name"></has-error>
                                         </div>
@@ -173,6 +171,7 @@
         data() {
             return {
                 users: {},
+                roles: {},
                 form: new Form({
                     id: '',
                     firstname: '',
@@ -265,6 +264,8 @@
         created() {
             this.loadUsers();
             Fire.$on('refreshUsers', () => {
+                this.form.reset();
+                this.form.clear();
                 this.loadUsers();
             });
         },
@@ -274,7 +275,8 @@
                     await axios.get('api/user')
                         .then(({ data }) => {
                             this.$Progress.finish();
-                            this.users = data.data
+                            this.users = data.data.users;
+                            this.roles = data.data.roles;
                         })
                         .catch(err => {
                             this.$Progress.fail();
@@ -314,12 +316,12 @@
                     }
                 })
             },
-            editModal(book) {
+            editModal(user) {
                 this.form.reset();
                 this.form.clear();
                 this.editMode = true;
                 $('#add_user').modal('show');
-                this.form.fill(book);
+                this.form.fill(user);
             },
             updateUser() {
                 Swal.fire({

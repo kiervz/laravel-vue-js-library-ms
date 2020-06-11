@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -12,8 +13,12 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->insert([
-            'user_type_id' => '1',
+        User::truncate();
+        DB::table('role_user')->truncate();
+
+        $adminRole = Role::where('name', 'Admin')->first();
+
+        $admin = User::create([
             'firstname' => 'Kiervey',
             'middlename' => 'Pogi',
             'lastname' => 'Maghanoy',
@@ -22,11 +27,13 @@ class UserSeeder extends Seeder
             'gender' => 'Male',
             'birthday' => '1998-10-24',
             'email' => 'kierveymaghanoy24@gmail.com',
-            'password' => '$2y$10$iA7.jLQZWtfgj1.kebQncujzdQ0cb9cOiDqpAdWDOSd27ikN2t57q',
+            'password' => Hash::make('password'),
             'status' => '1',
             'user_image' => 'profile.jpg',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
+
+        $admin->roles()->attach($adminRole);
     }
 }
