@@ -146,6 +146,9 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'category_id' => 'category',
+        'user_type_id' => 'user type'
+    ],
 
 ];

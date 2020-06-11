@@ -15,7 +15,7 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <table class="table table-sm table-hover table-bordered">
+                        <table class="table table-sm table-hover">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -92,7 +92,7 @@
                                         </div>
                                         <div v-else-if="item.type == 'radio'">
                                             <div class="form-group">
-                                                <label :for="item.name">{{ item.label }}</label>
+                                                <label :for="item.name" :class="{ 'is-invalid': form.errors.has(item.name) }">{{ item.label }}</label>
                                                 <div class="form-group d-flex">
                                                     <div class="custom-control custom-radio">
                                                         <input
@@ -102,7 +102,6 @@
                                                             id="Male"
                                                             v-model="form[item.name]"
                                                             value="Male"
-                                                            checked
                                                         >
                                                         <label for="Male" class="custom-control-label mr-3">Male</label>
                                                     </div>
@@ -118,6 +117,7 @@
                                                         <label for="Female" class="custom-control-label">Female</label>
                                                     </div>
                                                 </div>
+                                                <has-error :form="form" :field="item.name"></has-error>
                                             </div>
                                         </div>
                                         <div v-else>
@@ -290,6 +290,7 @@
                 },
             addModal() {
                 this.editMode = false;
+                Fire.$emit('refreshUsers');
                 $('#add_user').modal('show');
             },
             addUser() {
@@ -317,6 +318,10 @@
                             .catch(err => {
                                 this.$Progress.fail();
                                 console.log(err);
+                                toast.fire({
+                                    icon: 'warning',
+                                    title: 'Something went wrong. Please, try again later.',
+                                });
                             });
                     }
                 })

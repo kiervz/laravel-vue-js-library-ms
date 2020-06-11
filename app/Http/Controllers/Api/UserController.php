@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\User\UserRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
@@ -38,7 +39,7 @@ class UserController extends Controller
 
     }
 
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
         $status = "error";
         $message = "User failed to create.";
@@ -84,7 +85,7 @@ class UserController extends Controller
 
     }
 
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
         $user = User::findOrFail($id);
         $user->roles()->sync($request['user_type_id']);

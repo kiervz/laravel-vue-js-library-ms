@@ -20,7 +20,7 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <table class="table table-bordered">
+                        <table class="table table-sm table-hover">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -30,7 +30,7 @@
                                     <th>Author</th>
                                     <th>Publisher</th>
                                     <th>Category</th>
-                                    <th>Date Pub.</th>
+                                    <th>Year Pub.</th>
                                     <th>Copies</th>
                                     <th>Action</th>
                                 </tr>
@@ -67,7 +67,7 @@
             </div>
         </div>
 
-        <!-- Modal for updating book -->
+        <!-- Modal for adding and updating book -->
         <div class="modal fade" id="add_book" role="dialog">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -86,8 +86,8 @@
                             <div class="row">
                                 <!-- first row -->
                                 <div class="col-6">
-                                    <div v-for="(item, $index) in item_col_1" :key="$index" class="form-group">
-                                        <label :for="item.name">{{ item.label }}</label>
+                                    <div v-for="(item, $index) in item_col_1" :key="$index" class="form-group-sm">
+                                        <label :for="item.name" class="mt-1">{{ item.label }}</label>
                                         <input
                                             :id="item.name"
                                             :name="item.name"
@@ -101,8 +101,8 @@
                                 </div>
                                 <!-- second row -->
                                 <div class="col-6">
-                                    <div v-for="(item, $index) in item_col_2" :key="$index" class="form-group">
-                                        <label :for="item.name">{{ item.label }}</label>
+                                    <div v-for="(item, $index) in item_col_2" :key="$index" class="form-group-sm">
+                                        <label :for="item.name" class="mt-1">{{ item.label }}</label>
                                         <div v-if="item.type == 'dropdown'">
                                             <select
                                                 :name="item.name"
