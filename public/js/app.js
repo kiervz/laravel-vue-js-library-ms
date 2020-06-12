@@ -2763,9 +2763,98 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  mounted: function mounted() {
-    console.log('Component mounted.');
+  data: function data() {
+    return {
+      addStudentMode: true
+    };
+  },
+  methods: {
+    showStudentBtn: function showStudentBtn(isStudentMode) {
+      if (isStudentMode == true) {
+        this.addStudentMode = true;
+      } else {
+        this.addStudentMode = false;
+      }
+    }
   }
 });
 
@@ -45690,29 +45779,205 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c(
+          "div",
+          { staticClass: "card card-primary card-outline card-outline-tabs" },
+          [
+            _c("div", { staticClass: "card-header p-0 border-bottom-0" }, [
+              _c(
+                "ul",
+                {
+                  staticClass: "nav nav-tabs",
+                  attrs: { id: "custom-tabs-three-tab", role: "tablist" }
+                },
+                [
+                  _c("li", { staticClass: "nav-item" }, [
+                    _c(
+                      "a",
+                      {
+                        staticClass: "nav-link active",
+                        attrs: {
+                          id: "manage-student-tab",
+                          "data-toggle": "pill",
+                          href: "#manage-student",
+                          role: "tab",
+                          "aria-controls": "manage-student",
+                          "aria-selected": "true"
+                        },
+                        on: {
+                          click: function($event) {
+                            return _vm.showStudentBtn(true)
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n                                Manage Student\n                            "
+                        )
+                      ]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("li", { staticClass: "nav-item" }, [
+                    _c(
+                      "a",
+                      {
+                        staticClass: "nav-link",
+                        attrs: {
+                          id: "manage-faculty-tab",
+                          "data-toggle": "pill",
+                          href: "#manage-faculty",
+                          role: "tab",
+                          "aria-controls": "manage-faculty",
+                          "aria-selected": "false"
+                        },
+                        on: {
+                          click: function($event) {
+                            return _vm.showStudentBtn(false)
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n                                Manage Faculty\n                            "
+                        )
+                      ]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("li", { staticClass: "nav-item ml-auto mt-2 mr-2" }, [
+                    _vm.addStudentMode
+                      ? _c(
+                          "button",
+                          {
+                            staticClass:
+                              "btn btn-sm btn-primary show-book-modal",
+                            attrs: { "data-title": "ADD" }
+                          },
+                          [
+                            _vm._v(
+                              "\n                                Register Student "
+                            ),
+                            _c("i", { staticClass: "fas fa-user-plus" })
+                          ]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    !_vm.addStudentMode
+                      ? _c(
+                          "button",
+                          {
+                            staticClass:
+                              "btn btn-sm btn-primary show-book-modal",
+                            attrs: { "data-title": "ADD" }
+                          },
+                          [
+                            _vm._v(
+                              "\n                                Register Faculty "
+                            ),
+                            _c("i", { staticClass: "fas fa-user-plus" })
+                          ]
+                        )
+                      : _vm._e()
+                  ])
+                ]
+              )
+            ]),
+            _vm._v(" "),
+            _vm._m(0)
+          ]
+        )
+      ])
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-md-8" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("Borrowers Component")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                    I'm an example component.\n                "
-              )
-            ])
-          ])
-        ])
-      ])
+    return _c("div", { staticClass: "card-body" }, [
+      _c(
+        "div",
+        {
+          staticClass: "tab-content",
+          attrs: { id: "custom-tabs-three-tabContent" }
+        },
+        [
+          _c(
+            "div",
+            {
+              staticClass: "tab-pane fade active show",
+              attrs: {
+                id: "manage-student",
+                role: "tabpanel",
+                "aria-labelledby": "manage-student-tab"
+              }
+            },
+            [
+              _c("table", { staticClass: "table table-sm table-hover" }, [
+                _c("thead", [
+                  _c("tr", [
+                    _c("th", [_vm._v("#")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("User Type")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Name")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Gender")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Username")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Birthday")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Action")])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("tbody")
+              ])
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "tab-pane fade",
+              attrs: {
+                id: "manage-faculty",
+                role: "tabpanel",
+                "aria-labelledby": "manage-faculty-tab"
+              }
+            },
+            [
+              _c("table", { staticClass: "table table-sm table-hover" }, [
+                _c("thead", [
+                  _c("tr", [
+                    _c("th", [_vm._v("#")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("User Type")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Name")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Gender")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Username")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Birthday")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Action")])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("tbody")
+              ])
+            ]
+          )
+        ]
+      )
     ])
   }
 ]
