@@ -1,5 +1,7 @@
 <?php
 
+use App\Role;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -19,6 +21,7 @@ class UserSeeder extends Seeder
         $adminRole = Role::where('name', 'Admin')->first();
 
         $admin = User::create([
+            'user_type_id' => '1',
             'firstname' => 'Kiervey',
             'middlename' => 'Pogi',
             'lastname' => 'Maghanoy',

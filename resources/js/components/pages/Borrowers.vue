@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row justify-content-center">
             <!-- /.col -->
             <div class="col-md-12">
@@ -8,7 +8,6 @@
                         <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
                             <li class="nav-item">
                                 <a
-                                    @click="showStudentBtn(true)"
                                     class="nav-link active"
                                     id="manage-student-tab"
                                     data-toggle="pill"
@@ -22,7 +21,6 @@
                             </li>
                             <li class="nav-item">
                                 <a
-                                    @click="showStudentBtn(false)"
                                     class="nav-link"
                                     id="manage-faculty-tab"
                                     data-toggle="pill"
@@ -34,14 +32,6 @@
                                     Manage Faculty
                                 </a>
                             </li>
-                            <li class="nav-item ml-auto mt-2 mr-2">
-                                <button v-if="addStudentMode" class="btn btn-sm btn-primary show-book-modal" data-title="ADD">
-                                    Register Student <i class="fas fa-user-plus"></i>
-                                </button>
-                                <button v-if="!addStudentMode" class="btn btn-sm btn-primary show-book-modal" data-title="ADD">
-                                    Register Faculty <i class="fas fa-user-plus"></i>
-                                </button>
-                            </li>
                         </ul>
                     </div>
                     <div class="card-body">
@@ -52,11 +42,10 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>User Type</th>
                                             <th>Name</th>
                                             <th>Gender</th>
+                                            <th>Major</th>
                                             <th>Username</th>
-                                            <th>Birthday</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -96,17 +85,11 @@
     export default {
         data() {
             return {
-                addStudentMode: true,
+
             }
         },
         methods : {
-            showStudentBtn(isStudentMode) {
-                if (isStudentMode == true) {
-                    this.addStudentMode = true;
-                } else {
-                    this.addStudentMode = false;
-                }
-            }
+
         }
     }
 </script>
